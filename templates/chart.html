@@ -1,0 +1,10 @@
+<div class="row">
+	<div class="col-sm-1">
+		<div class="btn-group-vertical">
+			<button type="button" ng-repeat="(i, day) in days" class="btn btn-sm" ng-class="{'btn-default':!dayEnabled(i), 'btn-success':dayEnabled(i)}" ng-click="parentController.toggleDay(dayData, i)">{{day}}</button>
+		</div>            
+	</div>
+	<div class="col-sm-11">
+		<div class="chart-placeholder"/>
+	</div>
+</div>
