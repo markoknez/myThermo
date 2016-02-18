@@ -10,7 +10,7 @@ function chart(element, data) {
 	self.addChart(element);
 }
 
-chart.prototype.refreshBars = function(data) {
+chart.prototype.drawBars = function(data) {
 	var chart = this.chart;
 	this.bars = chart.selectAll('.graph-rect').data(data, function(d) {
 		return d.time;
@@ -22,17 +22,19 @@ chart.prototype.refreshBars = function(data) {
 		.attr('x', function(d) {
 			return xRange(d.time) + xRange.rangeBand() / 2 + xRange.rangeBand() / 8;
 		})
-		.attr('width', xRange.rangeBand())
 		.attr('y', HEIGHT - MARGINS.top)
-		.attr('height', 0);
-
-	this.bars.transition()
+		.attr('width', 0)
+		.attr('height', 0)
 		.attr('y', function(d) {
 			return yRange(d.temp);
 		})
 		.attr('height', function(d) {
 			return HEIGHT - MARGINS.bottom - yRange(d.temp);
 		});
+
+	this.bars.transition().delay(function (d, i) { return i * 25; } )
+		//.duration(50)
+		.attr('width', xRange.rangeBand());
 };
 
 chart.prototype.addChart = function(element) {
@@ -53,14 +55,17 @@ chart.prototype.addChart = function(element) {
 		.attr('transform', 'translate(' + MARGINS.left + ',0)')
 		.call(yAxis);
 
-	self.addCurrentTime();
+	self.chart.append('line')
+		.attr('class','time-line')
+		.attr('visibility','hidden');
+
 	self.addGradient();
 
 	self.chart.on('mousemove', function() {self.changeBar(this);});
 	self.chart.on('mousedown', function() {self.changeBar(this);});
 
 	self.setCurrentTemp(16);
-	self.refreshBars(self.data);
+	self.drawBars(self.data);
 };
 
 chart.prototype.changeBar = function(element){
@@ -130,15 +135,23 @@ chart.prototype.addCurrentTime = function() {
 		.attr('class', 'time-line');
 
 	timeLine.transition()
+		.attr('visibility','visible')
 		.attr('x1', xRangeLinear(currentTime))
 		.attr('y1', MARGINS.top)
 		.attr('x2', xRangeLinear(currentTime))
 		.attr('y2', HEIGHT - MARGINS.top);
 
 	//refresh every minute
-	setTimeout(function() {
+	self.currentTimeTimeout = setTimeout(function() {
 		self.addCurrentTime(chart);
 	}, 60 * 1000);
+};
+
+chart.prototype.removeCurrentTime = function(){
+	var self = this;
+	clearTimeout(self.currentTimeTimeout);
+	self.chart.selectAll('.time-line')
+		.attr('visibility','hidden');
 };
 
 chart.prototype.setCurrentTemp = function(temp) {

@@ -12,13 +12,34 @@
   <link rel="stylesheet" type="text/css" href="css/site.css">
   <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 </head>
-<body ng-app='thermo'>      
+<body ng-app='thermo'>
   <div class="container" ng-controller="testController">
-    <button class="btn bnt-primary" type="button" ng-click="addChart([])">Add chart</button>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="panel panel-default text-center">
+          <div class="panel-body">
+            <h3>Manual temperature:</h3>
+            <arc-picker value="status.manual_temp" is-picker="true"></arc-picker>
+          </div>
+        </div>  
+      </div>
+      <div class="col-md-3">
+        <div class="panel panel-default text-center">
+          <div class="panel-body">
+            <h3>Current temperature:</h3>
+            <arc-picker value="status.temp" is-picker="false"></arc-picker>
+          </div>
+        </div>  
+      </div>
+    </div>
+    
 
+    <button class="btn btn-primary" type="button" ng-click="addChart()"><span class="glyphicon glyphicon-plus"></span>Add chart</button>
+    <button class="btn btn-primary" ng-click="refresh()"><span class="glyphicon glyphicon-refresh"></span>Refresh</button>
+    <button class="btn btn-danger" ng-click="save(data)"><span class="glyphicon glyphicon-floppy-disk"></span>Save</button>
 
     <div ng-repeat="(i, dayData) in dayData">
-      <h4><span class="glyphicon glyphicon-trash" ng-click="removeChart(i)"></span> Chart {{i}}</h4>
+      <h4><button type="button" class="btn btn-xs btn-danger" ng-click="removeChart(i)"><span class="glyphicon glyphicon-trash" ng-click="removeChart(i)"></span></button> Chart {{i}}</h4>
       <chart day-data="dayData" status="status"></chart>
     </div>
 
@@ -42,21 +63,11 @@
       </div>
     </div>
 
-    <div class="form-inline">
-      <div class="form-group">
-        <label>Manual temp:</label>
-        <input class="form-control" ng-model="status.manual_temp"></input>
-        <button class="btn btn-primary" ng-click="setManualTemp(status.manual_temp)"><span class="glyphicon glyphicon-floppy-disk"></span></button>
-      </div>
-    </div>
-
     <button class="btn btn-primary" ng-click="toggleMode()">Set {{ (status.temperatureMode == 'automatic')?'manual':'automatic' }} mode</button>      
-    <button class="btn btn-primary" ng-click="refresh()"><span class="glyphicon glyphicon-refresh"></span>Refresh</button>
-    <button class="btn btn-danger" ng-click="save(data)"><span class="glyphicon glyphicon-floppy-disk"></span>Save</button>
-
   </div>
   <script type="text/javascript" src="js/dataFunctions.js"></script>
   <script type="text/javascript" src="js/angular.js"></script>
   <script type="text/javascript" src="js/script.js"></script>    
+  <script type="text/javascript" src="js/arcPicker.js"></script>
 </body>
 </html>

@@ -15,24 +15,6 @@
   opacity: 0.2;
 }
 
-.bar
-{
-    fill: FireBrick;
-}
-
-.graph-line{
-    stroke-width: 3px;
-    fill: #A92F2F;
-    stroke: #A92F2F;
-}
-        
-.graph-circle{
-    r: 2.5;
-    fill: gray;
-    stroke-width: 1px;
-    stroke: red;
-}
-
 .graph-rect{
   fill: url("#gradient");
   stroke: url('#gradient');
@@ -55,39 +37,8 @@
   stroke: rgba(255, 0, 0, 0.49);
 }
 
-.helper-line{
-    stroke: black;
-    stroke-width: 1px;
-    shape-rendering: crispEdges;
-    opacity: 0.5;
-}
-
-.d3-tip {
-  line-height: 1.5;
-  font-size: 10px;
-  /*font-weight: bold;*/
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  border-radius: 5px;
-}
-
-/* Creates a small triangle extender for the tooltip */
-.d3-tip:after {
-  box-sizing: border-box;
-  display: inline;
-  font-size: 10px;
-  width: 100%;
-  line-height: 1;
-  color: rgba(0, 0, 0, 0.8);
-  content: "\25BC";
-  position: absolute;
-  text-align: center;
-}
-
-/* Style northward tooltips differently */
-.d3-tip.n:after {
-  margin: -1px 0 0 0;
-  top: 100%;
-  left: 0;
+.arc-inner-text{
+  font-size: 30px;
+  fill: #5D5D5D;
+  font-family: monospace;
 }

@@ -1,3 +1,5 @@
+deviceUrl = 'http://192.168.64.110'
+
 angular.module('thermo', [])
 	.directive('chart', function() {
 		return {
@@ -23,9 +25,39 @@ angular.module('thermo', [])
 				$scope.dayEnabled = function(day) {
 					return $scope.enabledDays[day] === true;
 				};
+
+				$scope.$watch('enabledDays', function(newVal, oldVal){
+					var weekDay = new Date().getDay() - 1;
+					if($scope.enabledDays[weekDay] == true)
+						$scope.chart.addCurrentTime();
+					else
+						$scope.chart.removeCurrentTime();
+				}, true);
 			}
 		};
 	})
+	.directive('arcPicker', ['$timeout', function($timeout){
+		return {
+			restrict: 'E',
+			template: '<div class="arc-placeholder"></div>',
+			scope: {value: '=', isPicker: '='},
+			link: function($scope, $element, $attributes){
+				$scope.arc = new arcPicker($element[0], $scope.isPicker, $scope);
+				$scope.$watch('value',function(newVal, oldVal){
+					if(!newVal || newVal == oldVal) return;
+
+					$scope.arc.setValue(newVal);
+				});
+
+				$scope.$on('valueChanged', function(event, newVal){
+						(newVal);
+					$timeout(function (){
+						$scope.value = newVal;
+					});
+				});
+			}
+		};
+	}])
 	.controller('testController', ['$scope', '$timeout', '$http', function($scope, $timeout, $http) {
 		$scope.status = {};
 		$scope.temperatures = [];
@@ -36,7 +68,7 @@ angular.module('thermo', [])
 
 		$scope.save = function() {			
 			var saveData = generateResponse(getDataForESP($scope.dayData));
-			$http.post('http://mrostudios.duckdns.org:23231/set_auto_temp', saveData)
+			$http.post(deviceUrl + '/set_auto_temp', saveData)
 				.then(function() {
 					$scope.saved = true;
 					$timeout(function() {
@@ -47,11 +79,9 @@ angular.module('thermo', [])
 
 		$scope.charts = [];
 
-		$scope.addChart = function(data) {
-			fixData(data);
-			data = prepareDataForBars(data);
-			$scope.dayData.push({
-				key: $scope.dayData.length + '',
+		$scope.addChart = function() {			
+			var data = prepareDataForBars([{time:0, temp: 18}]);
+			$scope.dayData.push({				
 				enabledDays: {},
 				values: data
 			});
@@ -62,53 +92,42 @@ angular.module('thermo', [])
 		};
 
 		$scope.getStatus = function() {
-			$http.get('http://mrostudios.duckdns.org:23231/get_status')
+			$http.get(deviceUrl + '/get_status')
 				.then(function(response) {
 					$scope.status = response.data;
 				});
 		};
 
 		$scope.refresh = function() {
-			$http.get('http://mrostudios.duckdns.org:23231/get_auto_temp')
-				.then(function(response) {
-					allStates = parseResponse(response.data);
-					$scope.dayData = dayData = getStatesByDay(allStates);
+			$http.get(deviceUrl + '/get_auto_temp')
+				.then(function(response) {					
+					dayData = $scope.dayData = parseResponse(response.data);
 
 					$scope.getStatus();
 				});
 		};
 
 		$scope.setOffset = function(offset) {
-			$http.post("http://mrostudios.duckdns.org:23231/command", {
+			$http.post(deviceUrl + '/command', {
 				time_offset: offset
 			});
 		};
 
 		$scope.setManualTemp = function(temp) {
-			$http.post("http://mrostudios.duckdns.org:23231/command", {
+			$http.post(deviceUrl + '/command', {
 				manual_temp: d3.format('.2f')(temp)
 			});
 		};
 
 		$scope.toggleMode = function() {
 			if ($scope.status.temperatureMode == 'manual') {
-				$http.get("http://mrostudios.duckdns.org:23231/set_mode/auto");
+				$http.get(deviceUrl + '/set_mode/auto');
 				$scope.status.temperatureMode = 'automatic';
 				return;
 			}
 
-			$http.get('http://mrostudios.duckdns.org:23231/set_mode/manual');
+			$http.get(deviceUrl + '/set_mode/manual');
 			$scope.status.temperatureMode = 'manual';
-		};
-
-		$scope.isDayAvailable = function(chartData, day) {
-			var isAvailable = true;
-			$scope.dayData.forEach(function(d) {
-				if (chartData != d && d.enabledDays[day]) {
-					isAvailable = false;
-				}
-			});
-			return isAvailable;
 		};
 
 		$scope.toggleDay = function(chartData, day) {
