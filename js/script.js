@@ -32,14 +32,16 @@ chart.prototype.drawBars = function(data) {
 			return HEIGHT - MARGINS.bottom - yRange(d.temp);
 		});
 
-	this.bars.transition().delay(function (d, i) { return i * 25; } )
+	this.bars.transition().delay(function(d, i) {
+			return i * 25;
+		})
 		//.duration(50)
 		.attr('width', xRange.rangeBand());
 };
 
 chart.prototype.addChart = function(element) {
 	var self = this;
-	
+
 	self.chart = d3.select(element)
 		.append('svg')
 		.attr('height', HEIGHT)
@@ -55,20 +57,21 @@ chart.prototype.addChart = function(element) {
 		.attr('transform', 'translate(' + MARGINS.left + ',0)')
 		.call(yAxis);
 
-	self.chart.append('line')
-		.attr('class','time-line')
-		.attr('visibility','hidden');
 
-	self.addGradient();
+	// self.addGradient();
 
-	self.chart.on('mousemove', function() {self.changeBar(this);});
-	self.chart.on('mousedown', function() {self.changeBar(this);});
+	self.chart.on('mousemove', function() {
+		self.changeBar(this);
+	});
+	self.chart.on('mousedown', function() {
+		self.changeBar(this);
+	});
 
-	self.setCurrentTemp(16);
 	self.drawBars(self.data);
+	self.setCurrentTemp(16);
 };
 
-chart.prototype.changeBar = function(element){
+chart.prototype.changeBar = function(element) {
 	var self = this;
 	if (d3.event.buttons == 0) return;
 
@@ -102,23 +105,20 @@ chart.prototype.addGradient = function() {
 		.attr("y1", '0%')
 		.attr("x2", '0%')
 		.attr("y2", '100%')
-		// .attr("spreadMethod", "pad")
+		// .attr("spreadMethod", "pad");
 		.attr('gradientUnits', 'userSpaceOnUse');
 
 	gradient.append("stop")
 		.attr("offset", "20%")
-		.attr("stop-color", "#E21906")
-		.attr("stop-opacity", 1);
+		.attr("class", 'chart-color-hot');
 
 	gradient.append("stop")
 		.attr("offset", "50%")
-		.attr("stop-color", "#20A50B")
-		.attr("stop-opacity", 1);
+		.attr("class", "chart-color-medium");
 
 	gradient.append("stop")
 		.attr("offset", "80%")
-		.attr("stop-color", "#00C7EA")
-		.attr("stop-opacity", 1);
+		.attr("class", "chart-color-cold");
 };
 
 chart.prototype.addCurrentTime = function() {
@@ -132,10 +132,13 @@ chart.prototype.addCurrentTime = function() {
 	timeLine
 		.enter()
 		.append('line')
-		.attr('class', 'time-line');
+		.attr('class', 'time-line')
+		.attr('x1', MARGINS.left)
+		.attr('x2', MARGINS.left);
 
 	timeLine.transition()
-		.attr('visibility','visible')
+		.duration(2000)
+		.attr('visibility', 'visible')
 		.attr('x1', xRangeLinear(currentTime))
 		.attr('y1', MARGINS.top)
 		.attr('x2', xRangeLinear(currentTime))
@@ -147,11 +150,11 @@ chart.prototype.addCurrentTime = function() {
 	}, 60 * 1000);
 };
 
-chart.prototype.removeCurrentTime = function(){
+chart.prototype.removeCurrentTime = function() {
 	var self = this;
 	clearTimeout(self.currentTimeTimeout);
 	self.chart.selectAll('.time-line')
-		.attr('visibility','hidden');
+		.attr('visibility', 'hidden');
 };
 
 chart.prototype.setCurrentTemp = function(temp) {
@@ -161,9 +164,12 @@ chart.prototype.setCurrentTemp = function(temp) {
 
 	tempLine.enter()
 		.append('line')
-		.attr('class', 'temp-line');
+		.attr('class', 'temp-line')
+		.attr('y1', HEIGHT - MARGINS.bottom)
+		.attr('y2', HEIGHT - MARGINS.bottom);
 
 	tempLine.transition()
+		.duration(1000)
 		.attr('x1', MARGINS.left)
 		.attr('y1', function(d) {
 			return yRange(d);
@@ -211,3 +217,6 @@ yAxis = d3.svg.axis()
 	.innerTickSize(-WIDTH + MARGINS.left * 2)
 	.outerTickSize(5)
 	.tickSubdivide(true);
+
+//setup gradient scale
+$('#gradient').attr('y2',(HEIGHT-MARGINS.top)+'px');
