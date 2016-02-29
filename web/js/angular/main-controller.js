@@ -102,7 +102,7 @@ angular.module('thermo', [])
 
 		$scope.toggleDay = function(chartData, day) {
 			$scope.dayData.forEach(function(d) {
-				d.enabledDays[day] = chartData == d;
+				d.enabledDays[day] = Object.is(chartData, d);
 			});
 		};
 

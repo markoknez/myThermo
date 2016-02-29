@@ -154,6 +154,7 @@ chart.prototype.removeCurrentTime = function() {
 	var self = this;
 	clearTimeout(self.currentTimeTimeout);
 	self.chart.selectAll('.time-line')
+		.transition()
 		.attr('visibility', 'hidden');
 };
 

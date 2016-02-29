@@ -26,10 +26,14 @@ angular.module('thermo')
 
 				$scope.$watch('enabledDays', function(newVal, oldVal){
 					var weekDay = new Date().getDay() - 1;
-					if($scope.enabledDays[weekDay] == true)
+					if($scope.enabledDays[weekDay] == true){
 						$scope.chart.addCurrentTime();
-					else
+						console.log('addCurrentTime');
+					}
+					else{
 						$scope.chart.removeCurrentTime();
+						console.log('removeCurrentTime');
+					}
 				}, true);
 			}
 		};
