@@ -173,10 +173,9 @@ function arcPicker(element, settings, $scope) {
 	self.refreshPicker = function(newProgress) {
 		var newValue = Math.round(convertProgressToValue(newProgress));
 		var newEndValue = convertValueToProgress(newValue);
-		if ($scope && newEndValue != self.progress) {
-			console.log(newValue);
+		if ($scope && newEndValue != self.progress)			
 			$scope.$emit('valueChanged', newValue);
-		}
+		
 		self.progress = newEndValue;
 
 		self.foreground

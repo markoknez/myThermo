@@ -1,8 +1,3 @@
-stopClick = false;
-deleteClick = false;
-
-
-
 function chart(element, data) {
 	var self = this;
 	self.data = data;
@@ -136,8 +131,9 @@ chart.prototype.addCurrentTime = function() {
 		.attr('x1', MARGINS.left)
 		.attr('x2', MARGINS.left);
 
-	timeLine.transition()
-		.duration(2000)
+	timeLine
+		// .transition()
+		// .duration(2000)
 		.attr('visibility', 'visible')
 		.attr('x1', xRangeLinear(currentTime))
 		.attr('y1', MARGINS.top)

@@ -1,0 +1,27 @@
+<div>
+	{{selectedTownName}} <button type="button" class="btn btn-xs btn-primary right" data-toggle="modal" data-target="#changeTownModal" ng-click="openDialog()"><span class="glyphicon glyphicon-cog"></span></button>
+
+	<div class="modal fade" role="dialog" id="changeTownModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+					<h4>Choose town</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label>Local city:</label>
+						<input class="form-control" type="text" ng-model="txtTown"></input>
+					</div>
+					<div class="list-group">
+						<a href="#" class="list-group-item" ng-class="{'active': isSelected(town)}" ng-repeat="town in yahooResult" ng-click="selectTown(town)">{{town.name}}, {{town.country.content}} - {{town.placeTypeName.content}}</a>
+					</div>					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-disabled="townSelected == null" ng-click="saveSelection()">Save</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
