@@ -20,8 +20,13 @@ angular.module('thermo', [])
 		$scope.weatherWOEID;
 		$scope.weatherCity;
 
+		function deviceUnreachableHandler(){
+			alert('cannot reach device');
+			location.reload();
+		}
+
 		$scope.save = function() {
-			var saveData = generateResponse(getDataForESP($scope.dayData));
+			saveData = generateResponse(getDataForESP($scope.dayData));
 			$http.post(deviceUrl + '/set_auto_temp', saveData)
 				.then(function() {
 					$scope.saved = true;
@@ -79,10 +84,7 @@ angular.module('thermo', [])
 					$scope.getWeather();
 					$scope.getCity();
 				})
-				.catch(function(){
-					alert('cannot reach device');
-					location.reload();
-				});
+				.catch(deviceUnreachableHandler);
 		};
 
 		$scope.refresh = function() {
@@ -91,7 +93,8 @@ angular.module('thermo', [])
 					dayData = $scope.dayData = parseResponse(response.data);
 
 					$scope.getStatus();
-				});
+				})
+				.catch(deviceUnreachableHandler);
 		};
 
 		$scope.setOffset = function(offset) {
