@@ -13,19 +13,20 @@ function arcPicker(element, settings, $scope) {
 	var arcWidth = 30;
 	var tickNumber = 15;
 	var showValue = true;
+	var bigTickFontSize = 24;
+	var smallTickFontSize = 12;
 
 	if (undefined !== settings) {
 		if (undefined !== settings.isPicker) isPicker = settings.isPicker;
-		if (undefined !== settings.width) height = width = settings.width;
-		if (undefined !== settings.radius) radius = settings.radius;
-		if (undefined !== settings.arcWidth) arcWidth = settings.arcWidth;
 		if (undefined !== settings.tickNumber) tickNumber = settings.tickNumber;
 		if (undefined !== settings.showValue) showValue = settings.showValue;
 	}
-
-	var height = width;
-	// var radius = width / 4;
 	var tickSize = arcWidth + 5;
+
+	var width = $(element).width();
+	var height = width;
+	var radius = width / 2 - arcWidth - bigTickFontSize * 2;
+	// var radius = width / 4;
 	tickData = d3.range(self.min, self.max, 1);	
 	self.progress = 0;
 
@@ -196,8 +197,8 @@ function arcPicker(element, settings, $scope) {
 				return d;
 			})
 			.attr('font-size',function(d){
-				if(newValue == d) return '24px';
-				return '14px';
+				if(newValue == d) return bigTickFontSize + 'px';
+				return smallTickFontSize + 'px';
 			})
 			.attr('dx', function(d, i) {
 				if(newValue == d)return self.tickXFunction(d, 30);

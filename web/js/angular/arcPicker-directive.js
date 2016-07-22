@@ -1,6 +1,7 @@
 angular.module('thermo')
 	.directive('arcPicker', ['$timeout', function($timeout){
 		return {
+			replace: true,
 			restrict: 'E',
 			template: '<div class="arc-placeholder"></div>',
 			scope: {value: '=', settings: '='},
