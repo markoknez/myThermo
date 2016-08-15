@@ -42,7 +42,6 @@ function arcPicker(element, settings, $scope) {
 		.append('g')
 		.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
 
-
 	self.background = self.svg.append('path')
 		.attr('class', 'arc-background')
 		.datum({

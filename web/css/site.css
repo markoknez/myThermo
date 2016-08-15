@@ -1,3 +1,7 @@
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important;
+}
+
 body {
   font-family: 'Ubuntu', sans-serif;
 }
@@ -26,8 +30,8 @@ body {
 }
 
 .graph-rect:hover{
-  fill: orange;  
-  stroke: orange;
+  fill: red;  
+  stroke: red;
   stroke-width: 1px;
 }
 
@@ -62,11 +66,13 @@ body {
 }
 
 .chart-color-hot{
-    stop-color: #E21906;
+    /*stop-color: #E21906;*/
+    stop-color: black;
     stop-opacity:1;
 }
 .chart-color-medium{
-    stop-color: #20A50B;
+    /*stop-color: #20A50B;*/
+    stop-color: gray;
     stop-opacity: 1;
 }
 

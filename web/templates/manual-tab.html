@@ -1,46 +1,44 @@
+<style type="text/css">
+  .vertical-align {
+    display: flex;
+    align-items: center;
+  }
 
-      <style type="text/css">
-        .vertical-align {
-          display: flex;
-          align-items: center;
-        }
-        .manual-picker {
-          margin: 0 auto;
-          width: 350px;
-        }
+  .vertical-align.col-sm-4 {
+    border: 1px solid black;
+  }
 
-        .forecast .thumbnail {
-          border: none;
-        }
-        .current-conditions {
-          margin: 0 auto;
-        }
+  .manual-picker {
+    margin: 0 auto;
+    width: 250px;
+  }
 
-        .forecast i {
-          font-size: 20px;
-        }
-      </style>
+  .manual-tab .thumbnail {
+    border: none;
+  }
+  .current-conditions {
+    margin: 0 auto;
+  }
 
-      <div class="row vertical-align">            
-        <div class="col-sm-6">
-          <arc-picker class="text-center manual-picker" value="status.manual_temp" settings="{showValue: false, isPicker: true, width: 945, radius: 380, arcWidth: 50}"></arc-picker>
-        </div>
-        <div class="col-sm-6">
-          <div class="current-conditions">
-            <h3>Zagreb</h3>
-            <h3><small>Current temp:</small> {{status.temp}}c</h3>
-            <h3><small>Outside temp:</small> {{weather.condition.temp}}c</h3>
-          </div>
-        </div>
-        </div>
-        <div class="row forecast">
-          <div class="col-xs-4 text-center" ng-repeat="condition in weather.forecast | limitTo: 3" style="z-index: -5">
-            <div class="thumbnail">
-              <h4><i class="wi" ng-class="'wi-yahoo-' + condition.code"></i></h4>
-              <div class="caption">
-                <h4>{{condition.text}}</h4>
-                <p>{{condition.high}}/{{condition.low}}</p>     
-              </div>
-            </div>
-          </div>
-        </div>
+  .forecast i {
+    font-size: 20px;
+  }
+</style>
+
+<div class="manual-tab row vertical-align">            
+  <div class="col-sm-6 text-center">
+    <arc-picker class="manual-picker" value="status.manual_temp" settings="{showValue: false, isPicker: true, width: 945, radius: 380, arcWidth: 50}"></arc-picker>
+    <div class="manual-picker" style="">set temperature</div>
+  </div>
+  <div class="col-sm-6">
+    <div class="current-conditions">
+      <h3>Zagreb</h3>
+      <h3><small>Current temp:</small> {{status.temp}}c</h3>
+      <h3><small>Outside temp:</small> {{weather.condition.temp}}c</h3>
+      <br>
+      <div class="h4 thumbnail" ng-repeat="condition in weather.forecast | limitTo: 3" style="z-index: -5">
+        <span><i class="wi" ng-class="'wi-yahoo-' + condition.code"></i> <small>{{condition.text}} - {{condition.high}}/{{condition.low}}</small></span>
+      </div>
+    </div>
+  </div>
+</div>

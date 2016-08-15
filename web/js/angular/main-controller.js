@@ -16,7 +16,7 @@ angular.module('thermo', [])
 	.controller('testController', ['$scope', '$timeout', '$http', function($scope, $timeout, $http) {
 		$scope.status = {};
 		$scope.temperatures = [];
-		$scope.activeTab = 'automatic';
+		$scope.activeTab = '';
 		$scope.weatherWOEID;
 		$scope.weatherCity;
 

@@ -192,7 +192,7 @@ xRangeLinear = d3.scale.linear()
 	.domain([0, 24])
 	.range([MARGINS.left, WIDTH - MARGINS.left]);
 xRange = d3.scale.ordinal()
-	.rangeBands([MARGINS.left, WIDTH - MARGINS.left], 0.1)
+	.rangeBands([MARGINS.left, WIDTH - MARGINS.left], 0.5)
 	.domain(d3.range(0, 24.5, 0.5));
 yRange = d3.scale.linear()
 	.range([HEIGHT - MARGINS.top, MARGINS.bottom])
