@@ -14,10 +14,10 @@ BUILD_BASE	= /f/projekti/doma/termostat/source/esp/builds
 FW_BASE		= /f/projekti/doma/termostat/source/esp/src
 
 # Base directory for the compiler
-XTENSA_TOOLS_ROOT ?= $(ROOT)/crosstool-NG/builds/xtensa-lx106-elf/bin
+XTENSA_TOOLS_ROOT ?= $(ROOT)/xtensa-lx106-elf/bin
 
 # base directory of the ESP8266 SDK package, absolute
-SDK_BASE	?= $(ROOT)/ESP8266_SDK
+SDK_BASE	?= $(ROOT)/../source/esp
 
 #Esptool.py path and port
 ESPTOOL		?= esptool.py
@@ -28,20 +28,20 @@ TARGET		= app
 
 # which modules (subdirectories) of the project to include in compiling
 MODULES		= driver user u8glib
-EXTRA_INCDIR    = include $(ROOT)/include/ 
+EXTRA_INCDIR    = include $(ROOT)/include/ include/driver
 
 # libraries used in this project, mainly provided by the SDK
-LIBS		= c gcc hal phy net80211 lwip wpa upgrade upgrade_ssl main pp
+LIBS		= c gcc hal phy net80211 lwip wpa upgrade main pp json ssl pwm crypto
 
 # compiler flags using during compilation of source files
-CFLAGS		= -Os -g -O2 -Wpointer-arith -Wundef -Werror -Wl,-EL -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals  -D__ets__ -DICACHE_FLASH
+CFLAGS		= -Os -g -O2 -Wpointer-arith -Wundef -Werror -Wl,-EL -fno-inline-functions -ffunction-sections -fdata-sections -nostdlib -Wl,-EL -mlongcalls -mtext-section-literals  -D__ets__ -DICACHE_FLASH
 CXXFLAGS	= $(CFLAGS) -fno-rtti -fno-exceptions
 
 # linker flags used to generate the main object file
-LDFLAGS		= -nostdlib -Wl,--no-check-sections -u call_user_start -Wl,-static
+LDFLAGS		= -nostdlib -Wl,--no-check-sections -u call_user_start -Wl,-static -Wl,--gc-section
 
 # linker script used for the above linkier step
-LD_SCRIPT	= eagle.app.v6.ld
+LD_SCRIPT	= eagle.app.v6.new.2048.ld
 
 # various paths from the SDK used in this project
 SDK_LIBDIR	= lib
@@ -140,19 +140,19 @@ firmware:
 	$(Q) mkdir -p $@
 
 flash: firmware/0x00000.bin firmware/0x40000.bin
-	-$(ESPTOOL) --port $(ESPPORT) write_flash 0x00000 firmware/0x00000.bin
-	sleep 3
-	-$(ESPTOOL) --port $(ESPPORT) write_flash 0x40000 firmware/0x40000.bin
+	# -$(ESPTOOL) --port $(ESPPORT) write_flash 0x00000 firmware/0x00000.bin
+	# sleep 3
+	# -$(ESPTOOL) --port $(ESPPORT) write_flash 0x40000 firmware/0x40000.bin
 
 clean:
-	$(Q) rm -f $(APP_AR)
-	$(Q) rm -f $(TARGET_OUT)
-	$(Q) rm -rf $(BUILD_DIR)
-	$(Q) rm -rf $(BUILD_BASE)
+	# $(Q) rm -f $(APP_AR)
+	# $(Q) rm -f $(TARGET_OUT)
+	# $(Q) rm -rf $(BUILD_DIR)
+	# $(Q) rm -rf $(BUILD_BASE)
 
 
-	$(Q) rm -f $(FW_FILE_1)
-	$(Q) rm -f $(FW_FILE_2)
-	$(Q) rm -rf $(FW_BASE)
+	# $(Q) rm -f $(FW_FILE_1)
+	# $(Q) rm -f $(FW_FILE_2)
+	# $(Q) rm -rf $(FW_BASE)
 
 $(foreach bdir,$(BUILD_DIR),$(eval $(call compile-objects,$(bdir))))
