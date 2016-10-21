@@ -40,7 +40,7 @@ void my_flash_write(uint32_t sector, char *data, uint32_t len){
 
     spi_flash_erase_sector(sector);
 
-    uint32_t dstAddress = sector << (4 * 3);
+    uint32_t dstAddress = sector * SPI_FLASH_SEC_SIZE;
     spi_flash_write(dstAddress, (uint32 *)magic_data, sizeof(magic_data));
     spi_flash_write(dstAddress + sizeof(magic_data), (uint32 *)data, len);
 }
@@ -50,7 +50,7 @@ void my_flash_read(uint32_t sector, char **data, uint32_t *len){
     char magic_data[] = {0xde, 0xad, 0xbe, 0xef, 0x00, 0x00, 0x00, 0x00};
 
     char flashData[8];
-    uint32_t srcAddress = sector << (4 * 3);
+    uint32_t srcAddress = sector * SPI_FLASH_SEC_SIZE;
     spi_flash_read(srcAddress, (uint32 *)flashData, sizeof(flashData));
 
     if(os_memcmp(magic_data, flashData, 4) != 0){

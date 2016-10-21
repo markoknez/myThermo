@@ -1,3 +1,4 @@
+#include <driver/ds1820.h>
 #include "ets_sys.h"
 #include "osapi.h"
 #include "mem.h"
@@ -6,6 +7,7 @@
 #include "time.h"
 #include "json_parse_weather.h"
 #include "weather.h"
+#include "my_temperature.h"
 
 #include "user_global.h"
 
@@ -24,7 +26,7 @@ char* json_create() {
     os_sprintf(buffer, "%s\t,\"date\":\"%02d/%02d/%02d\"\n", buffer, t_time->tm_mday, t_time->tm_mon + 1, t_time->tm_year + 1900);
 
 
-    os_sprintf(buffer, "%s\t,\"temp\":%d.%02d\n", buffer, temperature / 100, abs(temperature % 100));
+    os_sprintf(buffer, "%s\t,\"temp\":%d.%02d\n", buffer, temperature_currentTemperature / 100, abs(temperature_currentTemperature % 100));
 
     uint8_t hour = secondsFromRestart / 3600;
     uint8_t minute = (secondsFromRestart - hour * 3600) / 60;

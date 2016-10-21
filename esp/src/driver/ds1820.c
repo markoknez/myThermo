@@ -1,3 +1,4 @@
+#include <driver/ds1820.h>
 #include "ets_sys.h"
 #include "os_type.h"
 #include "mem.h"
@@ -43,7 +44,7 @@ ICACHE_FLASH_ATTR static uint8_t crc8(const uint8_t *addr, uint8_t len);
 
 os_timer_t timer_tempReady;
 
-int16_t temperature;
+int16_t temperature_currentTemperature;
 
 ICACHE_FLASH_ATTR
 static void ds_read_temp(uint8_t *addr) {
@@ -58,7 +59,7 @@ static void ds_read_temp(uint8_t *addr) {
 		data[i] = read();
 	}
 
-// float arithmetic isn't really necessary, tVal and tFract are in 1/10 °C
+// float arithmetic isn't really necessary, tVal and tFract are in 1/10 ï¿½C
 	uint16_t tVal, tFract;
 	char tSign;
 
@@ -79,9 +80,9 @@ static void ds_read_temp(uint8_t *addr) {
 	}
 
 
-	temperature = (uint16_t)tVal * 100 + tFract;
+	temperature_currentTemperature = (uint16_t)tVal * 100 + tFract;
 	if(tSign == '-')
-		temperature *= -1;
+		temperature_currentTemperature *= -1;
 //	os_printf("%d.%d\n", tVal, tFract);
 //	os_printf("%d.%d\n", temperature / 100, temperature % 100);
 }
@@ -114,7 +115,7 @@ void ds_init() {
 	PIN_PULLUP_EN(PERIPHS_IO_MUX_GPIO5_U);
 
 	// Configure the GPIO with internal pull-up
-	// PIN_PULLUP_EN( gpio );
+	// PIN_PULLUP_EN( gpio );./g
 
 	GPIO_DIS_OUTPUT(5);
 

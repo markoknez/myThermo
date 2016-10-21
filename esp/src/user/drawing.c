@@ -1,10 +1,11 @@
+#include <driver/ds1820.h>
 #include "icons.h"
-#include "ets_sys.h"
 #include "osapi.h"
 #include "user_interface.h"
 #include "user_global.h"
 #include "json_parse_weather.h"
 #include "upgrade.h"
+#include "my_temperature.h"
 
 u8g_t u8g;
 os_timer_t timer_drawing;
@@ -132,22 +133,22 @@ static void draw_normal(void) {
     //current measured temperature
     u8g_SetFont(&u8g, u8g_font_helvB18);
     u8g_SetFontPosTop(&u8g);
-    os_sprintf(buf, "%d", temperature / 100);
+    os_sprintf(buf, "%d", temperature_currentTemperature / 100);
     uint8_t currentTempWidth = u8g_GetStrWidth(&u8g, buf);
-    uint8_t cWidth = u8g_GetStrWidth(&u8g, "°C");
+    uint8_t cWidth = u8g_GetStrWidth(&u8g, "C");
     uint8_t strHeight = u8g_GetFontAscent(&u8g);
 
     u8g_SetFont(&u8g, u8g_font_helvR08);
     u8g_SetFontPosBaseline(&u8g);
-    os_sprintf(buf, "%02d", abs(temperature % 100));
+    os_sprintf(buf, "%02d", abs(temperature_currentTemperature % 100));
     uint8_t webTempWidth = u8g_GetStrWidth(&u8g, buf);
     u8g_DrawStr(&u8g, iconWidth + (128 - iconWidth) / 2 - (currentTempWidth + cWidth + webTempWidth) / 2 + currentTempWidth, 16 + strHeight, buf);
 
     u8g_SetFont(&u8g, u8g_font_helvB18);
     u8g_SetFontPosTop(&u8g);
-    os_sprintf(buf, "%d", temperature / 100);
+    os_sprintf(buf, "%d", temperature_currentTemperature / 100);
     u8g_DrawStr(&u8g, iconWidth + (128 - iconWidth) / 2 - (currentTempWidth + cWidth + webTempWidth) / 2, 16, buf);
-    u8g_DrawStr(&u8g, iconWidth + (128 - iconWidth) / 2 - (currentTempWidth + cWidth + webTempWidth) / 2 + currentTempWidth + webTempWidth, 16, "°C");
+    u8g_DrawStr(&u8g, iconWidth + (128 - iconWidth) / 2 - (currentTempWidth + cWidth + webTempWidth) / 2 + currentTempWidth + webTempWidth, 16, "C");
 
     //web text
     if (weather_response.code != 255) {
@@ -162,7 +163,7 @@ static void draw_normal(void) {
     //web temperature
     u8g_SetFont(&u8g, u8g_font_6x10);
     u8g_SetFontPosBottom(&u8g);
-    os_sprintf(buf, "%d°C", weather_response.temp);
+    os_sprintf(buf, "%dC", weather_response.temp);
     uint8_t outsideTempWidth = u8g_GetStrWidth(&u8g, buf);
     u8g_DrawStr(&u8g, iconWidth + (128 - iconWidth) / 2 - outsideTempWidth / 2, 64 - strHeight, buf);
 
@@ -179,13 +180,13 @@ static void draw_normal(void) {
     u8g_SetFontPosCenter(&u8g);
 
     if(temperatureMode == MANUAL){
-        os_sprintf(buf, "Manual: %d.%02d°C", manual_temp / 100, abs(manual_temp % 100));
+        os_sprintf(buf, "Manual: %d.%02dC", manual_temp / 100, abs(manual_temp % 100));
     } else if (temperatureMode == AUTOMATIC){
         if(currentState == NULL){
             os_sprintf(buf, "Auto");
         }
         else{
-            os_sprintf(buf, "A:%d.%02d°C, %d:%02d", currentState->temp / 100, abs(currentState->temp % 100), currentState->time / 60, currentState->time % 60);
+            os_sprintf(buf, "A:%d.%02dC, %d:%02d", currentState->temp / 100, abs(currentState->temp % 100), currentState->time / 60, currentState->time % 60);
         }
     }
 

@@ -17,7 +17,6 @@ typedef enum {
 extern uint32_t secondsFromRestart;
 extern uint32_t unixSeconds;
 extern bool npt_invalid;
-extern int16_t temperature;
 extern auto_state_t *currentState;
 extern temperatureControlMode temperatureMode;
 extern int32_t ntpTimeOffset;
@@ -66,11 +65,7 @@ void data_send_text(struct espconn *conn, char *text);
 void data_send_fail(struct espconn *conn, uint16_t code, char *statusMessage);
 void data_send_ok(struct espconn *conn);
 
-void ds_init(void);
-uint8_t ds_reset(void);
-void ds_reset_search();
-uint8_t ds_search( uint8_t *newAddr );
-uint8_t ds_request_temp(uint8_t *address);
+
 
 void json_parse_command(char *json);
 char* json_status_get();

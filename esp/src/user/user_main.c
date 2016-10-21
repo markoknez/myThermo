@@ -8,20 +8,15 @@
 // * Modification history:
 // *     2014/1/1, v1.0 create this file.
 //*******************************************************************************/
+#include <my_temperature.h>
+#include <my_duckdns.h>
+#include <my_thingspeak.h>
 #include "ets_sys.h"
-#include "eagle_soc.h"
 #include "osapi.h"
 #include "mem.h"
 #include "user_interface.h"
-#include "gpio.h"
-
-#include "driver/one_wire.h"
-#include "driver/d18b20.h"
-
-#include "http_client.h"
 
 #include "user_global.h"
-#include "json_parse_weather.h"
 #include "weather.h"
 #include "driver/base64.h"
 #include "stdlib.h"
@@ -29,15 +24,10 @@
 
 #include "fota.h"
 
-#define WEATHER_TIMEOUT     600         //10 minutes reload time for weather information
-#define DUCK_TIMEOUT_MS     5 * 60 * 1000     //5 minutes duckdns refresh time
+#define WEATHER_TIMEOUT_S            60*10         //10 minutes reload time for weather information
 
+#define THINGSPEAK_UPDATE_PERIOD_MS  30000
 
-
-
-
-uint8_t tempDevice[8];
-bool temp_device_found = false;
 uint32_t secondsFromRestart = 0;
 bool wifi_connected = false;
 bool heater_enabled = false;
@@ -51,10 +41,7 @@ auto_state_t *states;
 uint16_t states_len;
 
 os_timer_t timer_thingSpeak;
-os_timer_t timer_temperatureRead;
-os_timer_t duck_timer;
 
-void print_auto_temp();
 void handle_auto_temp(const char *base64_str, int base64_len);
 char *get_auto_temp(size_t *output_len);
 
@@ -109,21 +96,21 @@ void save_status(){
     my_flash_writeValue32(data + 7, weather_woeid);
     data[11] = 0;
 
-    my_flash_write(0x100, data, 12);
+    my_flash_write(0xFB, data, 12);
 }
 
 ICACHE_FLASH_ATTR
 void save_states(){
     //TODO: hack because states_len is saved in status field
     save_status();
-    my_flash_write(0x101, (char *)states, states_len * 4);
+    my_flash_write(0xFC, (char *)states, states_len * 4);
 }
 
 ICACHE_FLASH_ATTR
 void read_status(){
     char *data = NULL;
     uint32_t len = 0;
-    my_flash_read(0x100, &data, &len);
+    my_flash_read(0xFB, &data, &len);
     if(data == NULL)
         return;
 
@@ -142,7 +129,7 @@ void read_states(){
     auto_state_t *newStates = NULL;
     uint32_t len;
 
-    my_flash_read(0x101, (char **)&newStates, &len);
+    my_flash_read(0xFC, (char **)&newStates, &len);
 
     if(newStates == NULL)
         return;
@@ -150,31 +137,6 @@ void read_states(){
     if(states != NULL)
         os_free(states);
     states = newStates;
-}
-
-ICACHE_FLASH_ATTR
-void read_temperature(void) {
-    ds_request_temp(tempDevice);
-}
-
-ICACHE_FLASH_ATTR
-void temperature_init(void) {
-    ds_init();
-    ds_reset();
-    ds_reset_search();
-    if (ds_search(tempDevice)) {
-        os_printf("DS18B20 device found... - ");
-        uint8_t i;
-        for (i = 0; i < 8; i++)
-            os_printf("0x%x ", tempDevice[i]);
-        os_printf("\n");
-        temp_device_found = true;
-    }
-    else os_printf("temperature device not found!!!!!!!!!!!!!\n");
-
-    os_timer_disarm(&timer_temperatureRead);
-    os_timer_setfn(&timer_temperatureRead, read_temperature, NULL);
-    os_timer_arm(&timer_temperatureRead, 5000, 1);
 }
 
 LOCAL ICACHE_FLASH_ATTR
@@ -216,7 +178,7 @@ auto_state_t *findCurrentState(void){
 LOCAL ICACHE_FLASH_ATTR
 void temperatureEngine(void){
     if(temperatureMode == MANUAL){
-       set_heater(manual_temp, temperature);
+       set_heater(manual_temp, temperature_currentTemperature);
     } else if(temperatureMode == AUTOMATIC){
        currentState = findCurrentState();
        //no state found, switch back to manual
@@ -224,7 +186,7 @@ void temperatureEngine(void){
            temperatureMode = MANUAL;
            return;
        }
-       set_heater(currentState->temp, temperature);
+       set_heater(currentState->temp, temperature_currentTemperature);
     }
 }
 
@@ -233,7 +195,7 @@ void second_counter(void) {
     secondsFromRestart++;
     unixSeconds++;
 
-    if(wifi_connected && (weather_getFetchTime() == 0 || secondsFromRestart - weather_getFetchTime() > WEATHER_TIMEOUT)){
+    if(wifi_connected && (weather_getFetchTime() == 0 || secondsFromRestart - weather_getFetchTime() > WEATHER_TIMEOUT_S)){
         weather_refreshData();
     }
 
@@ -256,40 +218,6 @@ void wifi_status_handler(System_Event_t *evt) {
         default:
             break;
     }
-}
-
-ICACHE_FLASH_ATTR
-static void duck_dns_response(char * response_body, int http_status, char * full_response){
-    if(http_status == 200){
-        if(os_strcmp(response_body, "OK") == 0){
-            os_printf("DuckDNS updated\n");
-            os_timer_disarm(&duck_timer);
-            os_timer_arm(&duck_timer, DUCK_TIMEOUT_MS, 1);
-            return;
-        }
-    }
-    os_printf("DuckDNS update failed\n");
-    os_timer_disarm(&duck_timer);
-    os_timer_arm(&duck_timer, 5000, 1);
-}
-
-ICACHE_FLASH_ATTR
-static void update_duckdns(void){
-    http_get("http://www.duckdns.org/update/mrostudios/e00dada5-2820-493c-9277-e20c8f3ff48d", "", duck_dns_response);
-}
-
-ICACHE_FLASH_ATTR
-static void thingSpeak_response(char *response_body, int http_status, char *full_response){
-    if(http_status != 200)
-        os_printf("thingspeak failed, status code: %d\n", http_status);
-}
-
-ICACHE_FLASH_ATTR
-static void update_thingSpeak(void){
-    os_printf("updating thingspeak\n");
-    char request[256];
-    os_sprintf(request, "http://api.thingspeak.com/update.json?api_key=B4Z9ZXQU6WYVQ93A&field1=%d.%02d", temperature / 100, abs(temperature % 100));
-    http_get(request, "", thingSpeak_response);
 }
 
 os_timer_t test;
@@ -326,7 +254,7 @@ static bool user_webserver_handler(struct espconn *conn, UrlFrame *frame) {
         data_send_ok(conn);
         return true;
     } else if(os_strcmp(frame->url, "/update_duckdns") == 0){
-        update_duckdns();
+        duckdns_update();
         data_send_ok(conn);
         return true;
     } else if(os_strcmp(frame->url, "/show_alloc") == 0){
@@ -375,18 +303,6 @@ static bool user_webserver_handler(struct espconn *conn, UrlFrame *frame) {
     }
 
     return false;
-}
-
-void print_auto_temp(){
-    int i;
-    for(i = 0; i < states_len; i++){
-        os_printf("time: %d, temp: %d\n", states[i].time, states[i].temp);
-    }
-
-    size_t base64_len;
-    char *base64 = get_auto_temp(&base64_len);
-    os_printf("base64: %s\n", base64);
-    os_free(base64);
 }
 
 char *get_auto_temp(size_t *output_len){
@@ -465,16 +381,11 @@ void user_init(void) {
     os_printf("SDK version:%s\n\n", system_get_sdk_version());
 
     temperature_init();
+    temperature_startReading();
+
     drawing_init();
 
-    os_timer_disarm(&duck_timer);
-    os_timer_setfn(&duck_timer, update_duckdns, NULL);
-    os_timer_arm(&duck_timer, 5000, 1);
-
-    os_timer_disarm(&timer_thingSpeak);
-    os_timer_setfn(&timer_thingSpeak, update_thingSpeak, NULL);
-    os_timer_arm(&timer_thingSpeak, 30000, 1);
-
+    //start seconds timer
     os_timer_disarm(&secondTimer);
     os_timer_setfn(&secondTimer, second_counter, NULL);
     os_timer_arm(&secondTimer, 1000, 1);
@@ -483,10 +394,8 @@ void user_init(void) {
 
     struct station_config config;
     config.bssid_set = 0;  //do net check MAC address of AP
-     char ssid[32] = "a+mNET";
-     char pass[64] = "rtm29a+m";
-//    char ssid[32] = "T-2_898dc0";
-//    char pass[64] = "INNBOX1205YV9001655";
+    char ssid[32] = "a+mNET";
+    char pass[64] = "rtm29a+m";
     os_strcpy(config.ssid, ssid, 32);
     os_strcpy(config.password, pass, 64);
 
@@ -494,6 +403,15 @@ void user_init(void) {
     wifi_station_set_config_current(&config);
     wifi_station_connect();
 
+    //start duckdns update
+    duckdns_update();
+
+    //start thingspeak update
+    os_timer_disarm(&timer_thingSpeak);
+    os_timer_setfn(&timer_thingSpeak, thingSpeak_update, NULL);
+    os_timer_arm(&timer_thingSpeak, THINGSPEAK_UPDATE_PERIOD_MS, 1);
+
+    //start webserver
     webserver_register_handler(user_webserver_handler);
     webserver_init();
 
