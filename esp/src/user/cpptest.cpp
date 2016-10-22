@@ -1,7 +1,5 @@
 
-extern "C" {
-	int cppTest();
-}
+#include "cpptest.h"
 
 class test {
 private :
@@ -14,3 +12,8 @@ public :
 		x = val;
 	}
 } testObj;
+
+extern "C" int cppTest() {
+	testObj.set(15);
+	return testObj.get();
+}

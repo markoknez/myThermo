@@ -22,6 +22,8 @@
 #include "stdlib.h"
 #include "my_flash.h"
 
+#include "cpptest.h"
+
 #include "fota.h"
 
 #define WEATHER_TIMEOUT_S            60*10         //10 minutes reload time for weather information
@@ -379,6 +381,8 @@ void user_init(void) {
     PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO2_U, FUNC_GPIO2);
 
     os_printf("SDK version:%s\n\n", system_get_sdk_version());
+
+    os_printf("Hello from c / cpp compiler %d\n\n", cppTest());
 
     temperature_init();
     temperature_startReading();

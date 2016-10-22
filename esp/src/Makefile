@@ -34,7 +34,7 @@ EXTRA_INCDIR    = include $(ROOT)/include/ include/driver
 LIBS		= c gcc hal phy net80211 lwip wpa upgrade main pp json ssl pwm crypto
 
 # compiler flags using during compilation of source files
-CFLAGS		= -Os -g -O2 -Wpointer-arith -Wundef -Werror -Wl,-EL -fno-inline-functions -ffunction-sections -fdata-sections -nostdlib -Wl,-EL -mlongcalls -mtext-section-literals  -D__ets__ -DICACHE_FLASH
+CFLAGS		= -Os -g -O2 -Wpointer-arith -Wundef -Werror -Wl,-EL -fno-inline-functions -ffunction-sections -fdata-sections -nostdlib -mlongcalls -mtext-section-literals -fno-builtin-printf -D__ets__ -DICACHE_FLASH
 CXXFLAGS	= $(CFLAGS) -fno-rtti -fno-exceptions
 
 # linker flags used to generate the main object file
@@ -50,7 +50,7 @@ SDK_INCDIR	= include include/json
 
 # we create two different files for uploading into the flash
 # these are the names and options to generate them
-FW_FILE_1	= 0x00000
+FW_FILE_1	= user1.4096
 FW_FILE_1_ARGS	= -bo $@ -bs .text -bs .data -bs .rodata -bc -ec
 FW_FILE_2	= 0x40000
 FW_FILE_2_ARGS	= -es .irom0.text $@ -ec
@@ -60,13 +60,14 @@ CC		:= $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-gcc
 CXX		:= $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-g++
 AR		:= $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-ar
 LD		:= $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-gcc
+OBJCOPY := $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-objcopy
 
 
 
 ####
 #### no user configurable options below here
 ####
-FW_TOOL		?= /usr/bin/esptool
+FW_TOOL		?= python $(SDK_BASE)/tools/gen_appbin.py
 SRC_DIR		:= $(MODULES)
 BUILD_DIR	:= $(addprefix $(BUILD_BASE)/,$(MODULES))
 
@@ -116,12 +117,17 @@ endef
 all: checkdirs $(TARGET_OUT) $(FW_FILE_1) $(FW_FILE_2)
 
 $(FW_FILE_1): $(TARGET_OUT)
-	$(vecho) "FW $@"
-	$(Q) $(FW_TOOL) -eo $(TARGET_OUT) $(FW_FILE_1_ARGS)
+	$(vecho) "FW $@"	
+	$(Q) $(OBJCOPY) --only-section .text -O binary $< $(BUILD_BASE)/eagle.app.v6.text.bin
+	$(Q) $(OBJCOPY) --only-section .data -O binary $< $(BUILD_BASE)/eagle.app.v6.data.bin
+	$(Q) $(OBJCOPY) --only-section .rodata -O binary $< $(BUILD_BASE)/eagle.app.v6.rodata.bin
+	$(Q) $(OBJCOPY) --only-section .irom0.text -O binary $< $(BUILD_BASE)/eagle.app.v6.irom0text.bin
+	$(Q) cd $(BUILD_BASE)
+	$(Q) $(FW_TOOL) $< 2 0 0 6 1
 
-$(FW_FILE_2): $(TARGET_OUT)
-	$(vecho) "FW $@"
-	$(Q) $(FW_TOOL) -eo $(TARGET_OUT) $(FW_FILE_2_ARGS)
+# $(FW_FILE_2): $(TARGET_OUT)
+	# $(vecho) "FW $@"
+	# $(Q) $(FW_TOOL) -eo $(TARGET_OUT) $(FW_FILE_2_ARGS)
 
 $(TARGET_OUT): $(APP_AR)
 	$(vecho) "LD $@"
