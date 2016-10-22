@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "ets_sys.h"
 #include "mem.h"
 #include "osapi.h"
@@ -6,7 +7,6 @@
 #include "user_global.h"
 #include "time.h"
 #include "ip_addr.h"
-#include "list.h"
 
 #define MAX_ALLOWED_LENGTH  2000
 

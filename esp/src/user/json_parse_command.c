@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "ets_sys.h"
 #include "osapi.h"
 #include "mem.h"
@@ -5,7 +6,6 @@
 #include "json/json.h"
 #include "time.h"
 #include "json_parse_command.h"
-#include "list.h"
 #include "weather.h"
 
 
