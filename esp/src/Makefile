@@ -11,7 +11,7 @@
 # relative to the project directory
 ROOT		= /f/projekti/doma/termostat/espressif
 BUILD_BASE	= /f/projekti/doma/termostat/source/esp/builds
-FW_BASE		= /f/projekti/doma/termostat/source/esp/src
+FW_BASE		= /f/projekti/doma/termostat/source/esp/builds
 
 # Base directory for the compiler
 XTENSA_TOOLS_ROOT ?= $(ROOT)/xtensa-lx106-elf/bin
@@ -20,8 +20,8 @@ XTENSA_TOOLS_ROOT ?= $(ROOT)/xtensa-lx106-elf/bin
 SDK_BASE	?= $(ROOT)/../source/esp
 
 #Esptool.py path and port
-ESPTOOL		?= esptool.py
-ESPPORT		?= /dev/ttyUSB0
+ESPTOOL		?= $(SDK_BASE)/tools/esptool.py
+ESPPORT		?= COM3
 
 # name for the target project
 TARGET		= app
@@ -50,10 +50,7 @@ SDK_INCDIR	= include include/json
 
 # we create two different files for uploading into the flash
 # these are the names and options to generate them
-FW_FILE_1	= user1.4096
-FW_FILE_1_ARGS	= -bo $@ -bs .text -bs .data -bs .rodata -bc -ec
-FW_FILE_2	= 0x40000
-FW_FILE_2_ARGS	= -es .irom0.text $@ -ec
+USER1_BIN	= user1.4096
 
 # select which tools to use as compiler, librarian and linker
 CC		:= $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-gcc
@@ -88,8 +85,7 @@ INCDIR	:= $(addprefix -I,$(SRC_DIR))
 EXTRA_INCDIR	:= $(addprefix -I,$(EXTRA_INCDIR))
 MODULE_INCDIR	:= $(addsuffix /include,$(INCDIR))
 
-FW_FILE_1	:= $(addprefix $(FW_BASE)/,$(FW_FILE_1).bin)
-FW_FILE_2	:= $(addprefix $(FW_BASE)/,$(FW_FILE_2).bin)
+USER1_BIN	:= $(addprefix $(FW_BASE)/,$(USER1_BIN).bin)
 
 V ?= $(VERBOSE)
 ifeq ("$(V)","1")
@@ -114,20 +110,15 @@ endef
 
 .PHONY: all checkdirs clean
 
-all: checkdirs $(TARGET_OUT) $(FW_FILE_1) $(FW_FILE_2)
+all: checkdirs $(TARGET_OUT) $(USER1_BIN)
 
-$(FW_FILE_1): $(TARGET_OUT)
+$(USER1_BIN): $(TARGET_OUT)
 	$(vecho) "FW $@"	
 	$(Q) $(OBJCOPY) --only-section .text -O binary $< $(BUILD_BASE)/eagle.app.v6.text.bin
 	$(Q) $(OBJCOPY) --only-section .data -O binary $< $(BUILD_BASE)/eagle.app.v6.data.bin
 	$(Q) $(OBJCOPY) --only-section .rodata -O binary $< $(BUILD_BASE)/eagle.app.v6.rodata.bin
 	$(Q) $(OBJCOPY) --only-section .irom0.text -O binary $< $(BUILD_BASE)/eagle.app.v6.irom0text.bin
-	$(Q) cd $(BUILD_BASE)
-	$(Q) $(FW_TOOL) $< 2 0 0 6 1
-
-# $(FW_FILE_2): $(TARGET_OUT)
-	# $(vecho) "FW $@"
-	# $(Q) $(FW_TOOL) -eo $(TARGET_OUT) $(FW_FILE_2_ARGS)
+	$(Q) cd $(BUILD_BASE); $(FW_TOOL) $< 2 0 0 6 1; mv eagle.app.flash.bin $@
 
 $(TARGET_OUT): $(APP_AR)
 	$(vecho) "LD $@"
@@ -142,13 +133,8 @@ checkdirs: $(BUILD_DIR) $(FW_BASE)
 $(BUILD_DIR):
 	$(Q) mkdir -p $@
 
-firmware:
-	$(Q) mkdir -p $@
-
-flash: firmware/0x00000.bin firmware/0x40000.bin
-	# -$(ESPTOOL) --port $(ESPPORT) write_flash 0x00000 firmware/0x00000.bin
-	# sleep 3
-	# -$(ESPTOOL) --port $(ESPPORT) write_flash 0x40000 firmware/0x40000.bin
+flash: $(USER1_BIN)
+	$(ESPTOOL) --port COM3 write_flash -ff 40m -fm qio -fs 32m-c1 0x00 $(SDK_BASE)/bin/boot_v1.6.bin 0x1000 $< 0x3fe000 $(SDK_BASE)/bin/blank.bin 0x3fc000 $(SDK_BASE)/bin/esp_init_data_default.bin
 
 clean:
 	# $(Q) rm -f $(APP_AR)
@@ -157,8 +143,7 @@ clean:
 	# $(Q) rm -rf $(BUILD_BASE)
 
 
-	# $(Q) rm -f $(FW_FILE_1)
-	# $(Q) rm -f $(FW_FILE_2)
+	# $(Q) rm -f $(USER1_BIN)
 	# $(Q) rm -rf $(FW_BASE)
 
 $(foreach bdir,$(BUILD_DIR),$(eval $(call compile-objects,$(bdir))))
