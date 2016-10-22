@@ -13,7 +13,7 @@ public :
 	}
 } testObj;
 
-extern "C" int cppTest() {
+int cppTest() {
 	testObj.set(15);
 	return testObj.get();
 }
