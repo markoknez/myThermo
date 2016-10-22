@@ -12,6 +12,7 @@
 ROOT		= /f/projekti/doma/termostat/espressif
 BUILD_BASE	= /f/projekti/doma/termostat/source/esp/builds
 FW_BASE		= /f/projekti/doma/termostat/source/esp/builds
+COMPILE     = gcc
 
 # Base directory for the compiler
 XTENSA_TOOLS_ROOT ?= $(ROOT)/xtensa-lx106-elf/bin

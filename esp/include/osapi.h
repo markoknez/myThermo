@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include "user_config.h"
+#include "clionhelper.h"
 
 #define os_bzero ets_bzero
 #define os_delay_us ets_delay_us
@@ -33,46 +34,6 @@
 
 #define os_sprintf  ets_sprintf
 
-int nothing() {
-	return 1;
-}
-
-#ifdef CLION
-#define ets_sprintf(...) nothing()
-#define os_printf_plus(...) nothing()
-#define ets_memcpy(...) nothing()
-#define ets_memmove(...) nothing()
-#define ets_memset(...) nothing()
-#define strcat(...) nothing()
-#define strchr(...) nothing()
-#define ets_strcmp(...) nothing()
-#define ets_strcpy(...) nothing()
-#define ets_strlen(...) nothing()
-#define ets_strncmp(...) nothing()
-#define ets_strncpy(...) nothing()
-#define ets_strstr(...) nothing()
-#define ets_timer_arm_new(...) nothing()
-#define ets_timer_disarm(...) nothing()
-#define ets_timer_setfn(...) nothing()
-
-#define ets_bzero(...) nothing()
-#define us ets_delay_us(...) nothing()
-#define ets_install_putc1(...) nothing()
-
-#define vPortFree(...) nothing()
-#define pvPortMalloc(...) nothing()
-#define pvPortCalloc(...) nothing()
-#define pvPortRealloc(...) nothing()
-#define pvPortZalloc(...) nothing()
-
-#endif
-
-#define os_timer_arm(a, b, c) ets_timer_arm_new(a, b, c, 1)
-#define os_timer_disarm ets_timer_disarm
-#define os_timer_setfn ets_timer_setfn
-
-#endif
-
 #ifdef USE_OPTIMIZE_PRINTF
 #define os_printf(fmt, ...) do {	\
 	static const char flash_str[] ICACHE_RODATA_ATTR STORE_ATTR = fmt;	\
@@ -81,7 +42,6 @@ int nothing() {
 #else
 #define os_printf	os_printf_plus
 #endif
-
 
 unsigned long os_random(void);
 int os_get_random(unsigned char *buf, size_t len);

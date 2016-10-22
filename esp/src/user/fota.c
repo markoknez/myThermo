@@ -4,9 +4,9 @@
 #include "mem.h"
 #include "user_interface.h"
 #include "espconn.h"
+#include "fota.h"
 
 ICACHE_FLASH_ATTR static void ota_finished_callback(void *arg);
-ICACHE_FLASH_ATTR void handleUpgrade(uint8_t serverVersion, const char *server_ip, uint16_t port, const char *path);
 
 #define requestHeader "Connection: keep-alive\r\n\
 Cache-Control: no-cache\r\n\

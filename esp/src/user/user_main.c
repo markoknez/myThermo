@@ -23,7 +23,6 @@
 #include "my_flash.h"
 
 #include "cpptest.h"
-
 #include "fota.h"
 
 #define WEATHER_TIMEOUT_S            60*10         //10 minutes reload time for weather information
