@@ -52,6 +52,7 @@ SDK_INCDIR	= include include/json
 # we create two different files for uploading into the flash
 # these are the names and options to generate them
 USER1_BIN	= user1.4096
+USER2_BIN	= user2.4096
 
 # select which tools to use as compiler, librarian and linker
 CC		:= $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-gcc
@@ -87,6 +88,7 @@ EXTRA_INCDIR	:= $(addprefix -I,$(EXTRA_INCDIR))
 MODULE_INCDIR	:= $(addsuffix /include,$(INCDIR))
 
 USER1_BIN	:= $(addprefix $(FW_BASE)/,$(USER1_BIN).bin)
+USER2_BIN	:= $(addprefix $(FW_BASE)/,$(USER2_BIN).bin)
 
 V ?= $(VERBOSE)
 ifeq ("$(V)","1")
@@ -111,15 +113,20 @@ endef
 
 .PHONY: all checkdirs clean
 
-all: checkdirs $(TARGET_OUT) $(USER1_BIN)
+all: checkdirs $(TARGET_OUT) $(USER1_BIN) $(USER2_BIN)
 
-$(USER1_BIN): $(TARGET_OUT)
+base-bin: $(TARGET_OUT)
 	$(vecho) "FW $@"	
 	$(Q) $(OBJCOPY) --only-section .text -O binary $< $(BUILD_BASE)/eagle.app.v6.text.bin
 	$(Q) $(OBJCOPY) --only-section .data -O binary $< $(BUILD_BASE)/eagle.app.v6.data.bin
 	$(Q) $(OBJCOPY) --only-section .rodata -O binary $< $(BUILD_BASE)/eagle.app.v6.rodata.bin
 	$(Q) $(OBJCOPY) --only-section .irom0.text -O binary $< $(BUILD_BASE)/eagle.app.v6.irom0text.bin
-	$(Q) cd $(BUILD_BASE); $(FW_TOOL) $< 2 0 0 6 1; mv eagle.app.flash.bin $@
+
+$(USER1_BIN): base-bin
+	$(Q) cd $(BUILD_BASE); $(FW_TOOL) $(TARGET_OUT) 2 0 0 6 1; mv eagle.app.flash.bin $@
+$(USER2_BIN): base-bin
+	$(Q) cd $(BUILD_BASE); $(FW_TOOL) $(TARGET_OUT) 2 0 0 6 2; mv eagle.app.flash.bin $@
+
 
 $(TARGET_OUT): $(APP_AR)
 	$(vecho) "LD $@"
