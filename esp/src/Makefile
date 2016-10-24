@@ -51,8 +51,8 @@ SDK_INCDIR	= include include/json
 
 # we create two different files for uploading into the flash
 # these are the names and options to generate them
-USER1_BIN	= user1.4096
-USER2_BIN	= user2.4096
+USER1_BIN	= user1
+USER2_BIN	= user2
 
 # select which tools to use as compiler, librarian and linker
 CC		:= $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-gcc
@@ -142,7 +142,12 @@ $(BUILD_DIR):
 	$(Q) mkdir -p $@
 
 flash: $(USER1_BIN)
-	$(ESPTOOL) --port COM3 write_flash -ff 40m -fm qio -fs 32m-c1 0x00 $(SDK_BASE)/bin/boot_v1.6.bin 0x1000 $< 0x3fe000 $(SDK_BASE)/bin/blank.bin 0x3fc000 $(SDK_BASE)/bin/esp_init_data_default.bin
+	$(ESPTOOL) --port COM3 write_flash -ff 40m -fm qio -fs 32m-c1 0x00 $(SDK_BASE)/bin/boot_v1.6.bin 0x1000 $< 0x3fe000 $(SDK_BASE)/bin/blank.bin 0xfe000 $(SDK_BASE)/bin/blank.bin 0x3fc000 $(SDK_BASE)/bin/esp_init_data_default.bin 0xfc000 $(SDK_BASE)/bin/esp_init_data_default.bin
+
+rest: $(USER1_BIN) $(USER2_BIN)
+	$(Q) rm /f/projekti/doma/termostat/source/rest/routes/esp_firmwares/user*.bin
+	$(Q) mv $(USER1_BIN) /f/projekti/doma/termostat/source/rest/routes/esp_firmwares/user1.bin
+	$(Q) mv $(USER2_BIN) /f/projekti/doma/termostat/source/rest/routes/esp_firmwares/user2.bin
 
 clean:
 	# $(Q) rm -f $(APP_AR)
