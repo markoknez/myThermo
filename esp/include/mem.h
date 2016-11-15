@@ -10,6 +10,7 @@ bool ICACHE_FLASH_ATTR check_memleak_debug_enable(void)
     return MEMLEAK_DEBUG_ENABLE;
 }
 */
+#include "missingIncludes.h"
 
 #ifndef MEMLEAK_DEBUG
 #define MEMLEAK_DEBUG_ENABLE	0

@@ -28,15 +28,15 @@ ESPPORT		?= COM3
 TARGET		= app
 
 # which modules (subdirectories) of the project to include in compiling
-MODULES		= driver user u8glib
-EXTRA_INCDIR    = include $(ROOT)/include/ include/driver
+MODULES		= driver user u8glib user/cpp
+EXTRA_INCDIR    = include $(ROOT)/include/ include/driver include/cpp
 
 # libraries used in this project, mainly provided by the SDK
-LIBS		= c gcc hal phy net80211 lwip wpa upgrade main pp json ssl pwm crypto
+LIBS		= m c gcc hal phy net80211 lwip wpa upgrade main pp json ssl pwm crypto
 
 # compiler flags using during compilation of source files
-CFLAGS		= -Os -g -O2 -Wpointer-arith -Wundef -Werror -Wl,-EL -fno-inline-functions -ffunction-sections -fdata-sections -nostdlib -mlongcalls -mtext-section-literals -fno-builtin-printf -D__ets__ -DICACHE_FLASH
-CXXFLAGS	= $(CFLAGS) -fno-rtti -fno-exceptions
+CFLAGS		= -Os -g -O2 -Wpointer-arith -Wundef -Wl,-EL -fno-inline-functions -ffunction-sections -fdata-sections -nostdlib -mlongcalls -mtext-section-literals -fno-builtin-printf -D__ets__ -DICACHE_FLASH
+CXXFLAGS	= $(CFLAGS) -fno-rtti -std=c++11 -fno-exceptions
 
 # linker flags used to generate the main object file
 LDFLAGS		= -nostdlib -Wl,--no-check-sections -u call_user_start -Wl,-static -Wl,--gc-section
@@ -58,7 +58,7 @@ USER2_BIN	= user2
 CC		:= $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-gcc
 CXX		:= $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-g++
 AR		:= $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-ar
-LD		:= $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-gcc
+LD		:= $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-g++
 OBJCOPY := $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-objcopy
 
 

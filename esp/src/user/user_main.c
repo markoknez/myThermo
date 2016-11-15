@@ -22,7 +22,6 @@
 #include "stdlib.h"
 #include "my_flash.h"
 
-#include "cpptest.h"
 #include "fota.h"
 
 #define WEATHER_TIMEOUT_S            60*10         //10 minutes reload time for weather information
@@ -381,8 +380,6 @@ void user_init(void) {
 
     os_printf("SDK version:%s\n\n", system_get_sdk_version());
 
-    os_printf("Hello from c / cpp compiler %d\n\n", cppTest());
-
     temperature_init();
     temperature_startReading();
 
@@ -399,8 +396,8 @@ void user_init(void) {
     config.bssid_set = 0;  //do net check MAC address of AP
     char ssid[32] = "a+mNET";
     char pass[64] = "rtm29a+m";
-    os_strcpy(config.ssid, ssid, 32);
-    os_strcpy(config.password, pass, 64);
+    os_strncpy(config.ssid, ssid, 32);
+    os_strncpy(config.password, pass, 64);
 
     wifi_set_event_handler_cb(wifi_status_handler);
     wifi_station_set_config_current(&config);

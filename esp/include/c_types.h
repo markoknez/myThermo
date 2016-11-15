@@ -86,10 +86,9 @@ typedef unsigned char   bool;
 #define BOOL            bool
 #define true            (1)
 #define false           (0)
+#endif /* !__cplusplus */
+
 #define TRUE            true
 #define FALSE           false
-
-
-#endif /* !__cplusplus */
 
 #endif /* _C_TYPES_H_ */

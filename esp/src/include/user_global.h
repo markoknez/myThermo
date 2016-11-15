@@ -3,7 +3,7 @@
 #include "user_interface.h"
 #include "espconn.h"
 
-u8g_t u8g;
+extern u8g_t u8g;
 typedef struct {
     uint16_t time;
     uint16_t temp;

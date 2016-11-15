@@ -7,7 +7,8 @@
 
 #include <string.h>
 #include "user_config.h"
-#include "clionhelper.h"
+#include "missingIncludes.h"
+#include "c_types.h"
 
 #define os_bzero ets_bzero
 #define os_delay_us ets_delay_us

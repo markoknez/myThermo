@@ -1,3 +1,4 @@
+#include <user_interface.h>
 #include "ets_sys.h"
 #include "osapi.h"
 #include "eagle_soc.h"
