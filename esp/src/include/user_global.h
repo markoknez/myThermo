@@ -1,23 +1,26 @@
 #include "u8g.h"
-#include "json_parse_command.h"
 #include "user_interface.h"
 #include "espconn.h"
+#include "mqtt.h"
+#include "auto_temp.h"
 
 extern u8g_t u8g;
-typedef struct {
-    uint16_t time;
-    uint16_t temp;
-} auto_state_t;
+
 
 typedef enum {
     MANUAL,
     AUTOMATIC
 } temperatureControlMode;
 
+
+MQTT_Client mqttClient;
 extern uint32_t secondsFromRestart;
 extern uint32_t unixSeconds;
 extern bool npt_invalid;
-extern auto_state_t *currentState;
+
+auto_state_t *currentState;
+auto_state_t *states;
+uint16_t states_len;
 extern temperatureControlMode temperatureMode;
 extern int32_t ntpTimeOffset;
 
@@ -45,6 +48,14 @@ typedef struct {
 	uint32_t content_length;
 } UrlFrame;
 
+typedef struct {
+	uint8_t code;
+	int16_t temp;
+	char text[64];
+} Weather;
+
+Weather weather;
+
 void ntp_init(void);
 void ntp_connect(void);
 uint8_t ntp_get_day_of_week();
@@ -64,8 +75,3 @@ void data_send_json(struct espconn *conn, char *json);
 void data_send_text(struct espconn *conn, char *text);
 void data_send_fail(struct espconn *conn, uint16_t code, char *statusMessage);
 void data_send_ok(struct espconn *conn);
-
-
-
-void json_parse_command(char *json);
-char* json_status_get();

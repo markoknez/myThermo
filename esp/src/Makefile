@@ -9,6 +9,7 @@
 #
 # Output directors to store intermediate compiled files
 # relative to the project directory
+DATETIME    = $(shell date "+%Y-%b-%d_%H:%M:%S_%Z")
 ROOT		= /f/projekti/doma/termostat/espressif
 BUILD_BASE	= /f/projekti/doma/termostat/source/esp/builds
 FW_BASE		= /f/projekti/doma/termostat/source/esp/builds
@@ -28,14 +29,15 @@ ESPPORT		?= COM3
 TARGET		= app
 
 # which modules (subdirectories) of the project to include in compiling
-MODULES		= driver user u8glib user/cpp
-EXTRA_INCDIR    = include $(ROOT)/include/ include/driver include/cpp
+MODULES		= driver user u8glib user/cpp mqtt
+EXTRA_INCDIR    = include $(ROOT)/include/ include/driver include/cpp mqtt/include
 
 # libraries used in this project, mainly provided by the SDK
-LIBS		= m c gcc hal phy net80211 lwip wpa upgrade main pp json ssl pwm crypto
+LIBS		= c gcc hal phy net80211 lwip wpa upgrade main pp json ssl pwm crypto
 
 # compiler flags using during compilation of source files
-CFLAGS		= -Os -g -O2 -Wpointer-arith -Wundef -Wl,-EL -fno-inline-functions -ffunction-sections -fdata-sections -nostdlib -mlongcalls -mtext-section-literals -fno-builtin-printf -D__ets__ -DICACHE_FLASH
+DEFINITIONS = -DICACHE_FLASH -DBUILD_TIME=\"$(DATETIME)\" -DDEBUG_ON
+CFLAGS		= -Os -g -O2 -Wpointer-arith -Wundef -Wl,-EL -fno-inline-functions -ffunction-sections -fdata-sections -nostdlib -mlongcalls -mtext-section-literals -fno-builtin-printf -D__ets__ $(DEFINITIONS)
 CXXFLAGS	= $(CFLAGS) -fno-rtti -std=c++11 -fno-exceptions
 
 # linker flags used to generate the main object file
@@ -150,12 +152,11 @@ rest: $(USER1_BIN) $(USER2_BIN)
 	$(Q) mv $(USER2_BIN) /f/projekti/doma/termostat/source/rest/routes/esp_firmwares/user2.bin
 
 clean:
+	$(Q) rm -rf $(BUILD_BASE)
 	# $(Q) rm -f $(APP_AR)
 	# $(Q) rm -f $(TARGET_OUT)
 	# $(Q) rm -rf $(BUILD_DIR)
 	# $(Q) rm -rf $(BUILD_BASE)
-
-
 	# $(Q) rm -f $(USER1_BIN)
 	# $(Q) rm -rf $(FW_BASE)
 

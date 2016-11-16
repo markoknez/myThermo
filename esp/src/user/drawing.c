@@ -1,9 +1,9 @@
 #include <driver/ds1820.h>
+#include <stdlib.h>
 #include "icons.h"
 #include "osapi.h"
 #include "user_interface.h"
 #include "user_global.h"
-#include "json_parse_weather.h"
 #include "upgrade.h"
 #include "my_temperature.h"
 
@@ -14,7 +14,7 @@ bool display_sleeping = false;
 
 ICACHE_FLASH_ATTR
 static void draw_weather_icon() {
-    switch (weather_response.code) {
+    switch (weather.code) {
         case 0:
         case 1:
         case 2:
@@ -114,7 +114,7 @@ static void draw_normal(void) {
     }
 
     //weather icon
-    if (weather_response.code != 255) {
+    if (weather.code != 255) {
         draw_weather_icon();
     }
 
@@ -151,10 +151,10 @@ static void draw_normal(void) {
     u8g_DrawStr(&u8g, iconWidth + (128 - iconWidth) / 2 - (currentTempWidth + cWidth + webTempWidth) / 2 + currentTempWidth + webTempWidth, 16, "C");
 
     //web text
-    if (weather_response.code != 255) {
+    if (weather.code != 255) {
         u8g_SetFont(&u8g, u8g_font_6x10);
         u8g_SetFontPosBottom(&u8g);
-        os_sprintf(buf, "%s", weather_response.text);
+        os_sprintf(buf, "%s", weather.text);
         currentTempWidth = u8g_GetStrWidth(&u8g, buf);
         strHeight = u8g_GetFontBBXHeight(&u8g);
         u8g_DrawStr(&u8g, iconWidth + (128 - iconWidth) / 2 - currentTempWidth / 2, 64, buf);
@@ -163,7 +163,7 @@ static void draw_normal(void) {
     //web temperature
     u8g_SetFont(&u8g, u8g_font_6x10);
     u8g_SetFontPosBottom(&u8g);
-    os_sprintf(buf, "%dC", weather_response.temp);
+    os_sprintf(buf, "%dC", weather.temp);
     uint8_t outsideTempWidth = u8g_GetStrWidth(&u8g, buf);
     u8g_DrawStr(&u8g, iconWidth + (128 - iconWidth) / 2 - outsideTempWidth / 2, 64 - strHeight, buf);
 

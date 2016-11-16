@@ -2,3 +2,4 @@ bin
 .idea
 .output
 esp/builds
+node_modules
