@@ -27,7 +27,7 @@ var setupMqtt = function() {
 
 	mqtt.on('message', function(topic, message) {
 		var topicParts = topic.split("/");
-		if (topicParts.len != 4)
+		if (topicParts.length != 5)
 			console.log("Topic wrong - " + topic);
 		var deviceId = topic[2];
 		var attribute = topic[3];
