@@ -16,9 +16,10 @@ var refreshWeatherForWOEID = function(woeid) {
 	}, function(data, response) {		
 		if (data && data.query && data.query.count == 1) {
 			console.log('Got response for woeid ' + woeid);
+			console.log(data.query.results.channel.item.condition);
 			var c = data.query.results.channel.item.condition;
 
-			mqtt.publish('mrostudios/weather/' + woeid + '/status', '1;2;3;'.replace('1',c.code).replace('2',c.temp).replace('3',c.text), {retain : true});
+			mqtt.publish('mrostudios/weather/' + woeid + '/status', '{1};{2};{3};'.replace('{1}',c.code).replace('{2}',c.temp).replace('{3}',c.text), {retain : true});
 		}
 		else {
 			console.log('Did not get expected data');
