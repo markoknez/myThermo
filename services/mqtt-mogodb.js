@@ -27,18 +27,25 @@ var setupMqtt = function() {
 
 	mqtt.on('message', function(topic, message) {
 		var topicParts = topic.split("/");
-		if (topicParts.length != 5)
+		if (topicParts.length != 5) {
 			console.log("Topic wrong - " + topic);
-		var deviceId = topic[2];
-		var attribute = topic[3];
+			return;
+		}
+
+		var deviceId = topicParts[2];
+		var attribute = topicParts[3];
 
 		var updatedDevice = {
 			"deviceId": deviceId
 		};
 		updatedDevice[attribute] = message;
-		Device.findOneAndUpdate(updatedDevice)
-			.then(function (doc) {
-
+		Device.findOneAndUpdate({
+				deviceId: deviceId
+			}, updatedDevice, {
+				upsert: true
+			})
+			.then(function(doc) {
+				console.log('updated entry');
 			});
 	});
 };
