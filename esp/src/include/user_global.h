@@ -1,3 +1,7 @@
+#ifndef TERMOSTAT_USER_GLOBAL_H
+#define TERMOSTAT_USER_GLOBAL_H
+
+
 #include "u8g.h"
 #include "user_interface.h"
 #include "espconn.h"
@@ -13,14 +17,14 @@ typedef enum {
 } temperatureControlMode;
 
 
-MQTT_Client mqttClient;
 extern uint32_t secondsFromRestart;
 extern uint32_t unixSeconds;
 extern bool npt_invalid;
 
-auto_state_t *currentState;
-auto_state_t *states;
-uint16_t states_len;
+extern auto_state_t *currentState;
+extern MQTT_Client mqttClient;
+extern auto_state_t *states;
+extern uint16_t states_len;
 extern temperatureControlMode temperatureMode;
 extern int32_t ntpTimeOffset;
 
@@ -75,3 +79,5 @@ void data_send_json(struct espconn *conn, char *json);
 void data_send_text(struct espconn *conn, char *text);
 void data_send_fail(struct espconn *conn, uint16_t code, char *statusMessage);
 void data_send_ok(struct espconn *conn);
+
+#endif

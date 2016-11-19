@@ -35,6 +35,7 @@ uint32_t my_flash_readValue32(char *data){
 
 ICACHE_FLASH_ATTR
 void my_flash_write(uint32_t sector, char *data, uint32_t len){
+    //write len header
     char magic_data[] = {0xde, 0xad, 0xbe, 0xef, 0x00, 0x00, 0x00, 0x00};
     my_flash_writeValue32(magic_data + 4, len);
 
@@ -49,6 +50,7 @@ ICACHE_FLASH_ATTR
 void my_flash_read(uint32_t sector, char **data, uint32_t *len){
     char magic_data[] = {0xde, 0xad, 0xbe, 0xef, 0x00, 0x00, 0x00, 0x00};
 
+    //read len from last four bytes of magic_data (part of header)
     char flashData[8];
     uint32_t srcAddress = sector * SPI_FLASH_SEC_SIZE;
     spi_flash_read(srcAddress, (uint32 *)flashData, sizeof(flashData));

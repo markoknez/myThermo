@@ -19,6 +19,7 @@
 #include "my_flash.h"
 #include "fota.h"
 #include "auto_temp.h"
+#include "myFlashState.h"
 
 #define WEATHER_TIMEOUT_S            60*10         //10 minutes reload time for weather information
 
@@ -33,83 +34,33 @@ uint32_t led_on = 0;
 temperatureControlMode temperatureMode = MANUAL;
 int16_t manual_temp = 1800;
 
+auto_state_t *currentState = NULL;
+MQTT_Client mqttClient;
+
 
 os_timer_t timer_thingSpeak;
 
 void handle_auto_temp(const char *base64_str, int base64_len);
+
 char *get_auto_temp(size_t *output_len);
 
 
-ICACHE_FLASH_ATTR
-void save_status(){
-    char data[12];
-    uint32_t weather_woeid = 851128;//weather_getWoeid();
-    my_flash_writeValue16(data, states_len);
-    my_flash_writeValue16(data + 2, ntpTimeOffset);
-    data[4] = temperatureMode;
-    my_flash_writeValue16(data + 5, manual_temp);
-    my_flash_writeValue32(data + 7, weather_woeid);
-    data[11] = 0;
-
-    my_flash_write(0xFB, data, 12);
-}
-
-ICACHE_FLASH_ATTR
-void save_states(){
-    //TODO: hack because states_len is saved in status field
-    save_status();
-    my_flash_write(0xFC, (char *)states, states_len * 4);
-}
-
-ICACHE_FLASH_ATTR
-void read_status(){
-    char *data = NULL;
-    uint32_t len = 0;
-    my_flash_read(0xFB, &data, &len);
-    if(data == NULL)
-        return;
-
-    uint32_t weather_woeid = 0;
-    states_len = my_flash_readValue16(data);
-    ntpTimeOffset = my_flash_readValue16(data + 2);
-    temperatureMode = data[4];
-    manual_temp = my_flash_readValue16(data + 5);
-    weather_woeid = my_flash_readValue32(data + 7);
-    //weather_setWoeid(weather_woeid);
-    os_free(data);
-}
-
-ICACHE_FLASH_ATTR
-void read_states(){
-    auto_state_t *newStates = NULL;
-    uint32_t len;
-
-    my_flash_read(0xFC, (char **)&newStates, &len);
-
-    if(newStates == NULL)
-        return;
-
-    if(states != NULL)
-        os_free(states);
-    states = newStates;
-}
-
 LOCAL ICACHE_FLASH_ATTR
-void set_heater(uint16_t targetTemp, uint16_t currentTemp){
-    if(currentTemp < targetTemp){
+void set_heater(uint16_t targetTemp, uint16_t currentTemp) {
+    if (currentTemp < targetTemp) {
         heater_enabled = true;
         return;
     }
 
-    if(currentTemp > targetTemp){
+    if (currentTemp > targetTemp) {
         heater_enabled = false;
         return;
     }
 }
 
 LOCAL ICACHE_FLASH_ATTR
-auto_state_t *findCurrentState(void){
-    if(states_len == 0)
+auto_state_t *findCurrentState(void) {
+    if (states_len == 0 || states == NULL)
         return NULL;
 
     uint32_t unixTime = ntp_get_current_time();
@@ -119,36 +70,51 @@ auto_state_t *findCurrentState(void){
     uint16_t currentTime = weekday * 24 * 60 + hour * 60 + min;
 
     uint8_t i;
-    for(i = 0; i < states_len; i++){
-        if(states[i].time > currentTime){
-            if(i == 0)
+    for (i = 0; i < states_len; i++) {
+        if (states[i].time > currentTime) {
+            if (i == 0)
                 return &states[states_len - 1];
 
-            return &states[i-1];
+            return &states[i - 1];
         }
     }
     return &states[states_len - 1];
 }
 
 LOCAL ICACHE_FLASH_ATTR
-void temperatureEngine(void){
-    if(temperatureMode == MANUAL){
-       set_heater(manual_temp, temperature_currentTemperature);
-    } else if(temperatureMode == AUTOMATIC){
-       currentState = findCurrentState();
-       //no state found, switch back to manual
-       if(currentState == NULL){
-           temperatureMode = MANUAL;
-           return;
-       }
-       set_heater(currentState->temp, temperature_currentTemperature);
+void temperatureEngine(void) {
+    if (temperatureMode == MANUAL) {
+        set_heater(manual_temp, temperature_currentTemperature);
+    } else if (temperatureMode == AUTOMATIC) {
+        currentState = findCurrentState();
+        //no state found, switch back to manual
+        if (currentState == NULL) {
+            temperatureMode = MANUAL;
+            MQTT_Publish(&mqttClient, "mrostudios/devices/termo-1/mode/status", "m", 1, 0, 1);
+            return;
+        }
+        set_heater(currentState->temp, temperature_currentTemperature);
     }
 }
+
+int16_t lastSentTempearture = 0;
 
 LOCAL ICACHE_FLASH_ATTR
 void second_counter(void) {
     secondsFromRestart++;
     unixSeconds++;
+
+    char buf[10];
+    if (mqttClient.pCon && lastSentTempearture != temperature_currentTemperature) {
+        os_sprintf(buf, "%d.%02d", temperature_currentTemperature / 100, abs(temperature_currentTemperature % 100));
+        MQTT_Publish(&mqttClient, "mrostudios/devices/termo-1/currentTemp/status", buf, os_strlen(buf), 0, 1);
+        lastSentTempearture = temperature_currentTemperature;
+    }
+
+    if(mqttClient.pCon && secondsFromRestart % 10 == 0) {
+        os_sprintf(buf, "%d", secondsFromRestart);
+        MQTT_Publish(&mqttClient, "mrostudios/devices/termo-1/uptime/status", buf, os_strlen(buf), 0, 1);
+    }
 
 //    if(wifi_connected && (weather_getFetchTime() == 0 || secondsFromRestart - weather_getFetchTime() > WEATHER_TIMEOUT_S)){
 //        weather_refreshData();
@@ -167,7 +133,14 @@ void wifi_status_handler(System_Event_t *evt) {
             MQTT_Connect(&mqttClient);
             wifi_connected = true;
 //            ntp_init();
-            os_printf("ip:" IPSTR ",mask:" IPSTR ",gw:" IPSTR "\n", IP2STR(&evt->event_info.got_ip.ip),  IP2STR(&evt->event_info.got_ip.mask),  IP2STR(&evt->event_info.got_ip.gw));
+            os_printf("ip:"
+                              IPSTR
+                              ",mask:"
+                              IPSTR
+                              ",gw:"
+                              IPSTR
+                              "\n", IP2STR(&evt->event_info.got_ip.ip), IP2STR(&evt->event_info.got_ip.mask),
+                      IP2STR(&evt->event_info.got_ip.gw));
             break;
         case EVENT_STAMODE_DISCONNECTED:
             MQTT_Disconnect(&mqttClient);
@@ -180,7 +153,7 @@ void wifi_status_handler(System_Event_t *evt) {
 
 os_timer_t test;
 ICACHE_FLASH_ATTR
-void test_update(){
+void test_update() {
     char ip[] = {192, 168, 1, 2};
     handleUpgrade(2, ip, 8080, "/");
 }
@@ -269,8 +242,7 @@ void test_update(){
 
 void start_mqtt();
 
-static void ICACHE_FLASH_ATTR wifi_cb(uint8_t status)
-{
+static void ICACHE_FLASH_ATTR wifi_cb(uint8_t status) {
     if (status == STATION_GOT_IP) {
         MQTT_Connect(&mqttClient);
     } else {
@@ -305,13 +277,8 @@ void app_init(void) {
     os_strncpy(config.ssid, ssid, 32);
     os_strncpy(config.password, pass, 64);
 
-//
     read_status();
     read_states();
-
-//    start_mqtt();
-//
-
 
     start_mqtt();
 

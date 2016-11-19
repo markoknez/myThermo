@@ -2,6 +2,10 @@
 #include "osapi.h"
 #include "mem.h"
 #include "auto_temp.h"
+#include "myFlashState.h"
+
+auto_state_t *states = NULL;
+uint16_t states_len = 0;
 
 ICACHE_FLASH_ATTR
 uint32 user_rf_cal_sector_set(void) {
@@ -52,10 +56,10 @@ static void ICACHE_FLASH_ATTR wifiConnectCb(uint8_t status) {
 static void ICACHE_FLASH_ATTR mqttConnectedCb(uint32_t *args) {
     MQTT_Client *client = (MQTT_Client *) args;
     INFO("MQTT: Connected\r\n");
-    MQTT_Subscribe(client, "mrostudios/weather/851128/status", 0);
-    MQTT_Subscribe(client, "mrostudios/termo-1/manualTemp", 0);
-    MQTT_Subscribe(client, "mrostudios/termo-1/autoTemp", 0);
-    MQTT_Subscribe(client, "mrostudios/termo-1/mode", 0);
+    MQTT_Subscribe(client, "mrostudios/devices/termo-1/autoTemp/command", 1);
+    MQTT_Subscribe(client, "mrostudios/devices/termo-1/manualTemp/command", 1);
+    MQTT_Subscribe(client, "mrostudios/devices/termo-1/mode/command", 1);
+    MQTT_Subscribe(client, "mrostudios/weather/851128/status", 1);
 }
 
 static void ICACHE_FLASH_ATTR mqttDisconnectedCb(uint32_t *args) {
@@ -73,6 +77,7 @@ void handlerWeather(const char *topic, const char *data) {
     char *strIdx = data;
     uint32_t colonIdx = 0;
     char temp[64];
+    if(os_strlen(data) > 64) { INFO("Weather data too long\n"); return; }
 
     char *index = os_strstr(data, ";");
     if (index == NULL) return;
@@ -102,15 +107,20 @@ void handlerWeather(const char *topic, const char *data) {
 
 ICACHE_FLASH_ATTR
 void handleManualTemp(const char *topic, const char *data) {
+    INFO("Received manual temp: %d\n", data);
     manual_temp = atoi(data);
+    save_status();
+    MQTT_Publish(&mqttClient, "mrostudios/devices/termo-1/manualTemp/status", data, os_strlen(data), 1, 1);
 }
 
 ICACHE_FLASH_ATTR
 void handleAutoTemp(const char* topic, const char *data) {
     auto_state_t *newStates = autoTempDecode(data, strlen(data), &states_len);
     if(newStates != NULL) {
-        os_free(states);
+        if(states) os_free(states);
         states = newStates;
+        save_states();
+        MQTT_Publish(&mqttClient, "mrostudios/devices/termo-1/autoTemp/status", data, os_strlen(data), 1, 1);
     }
 }
 
@@ -120,6 +130,8 @@ void handleMode(const char* topic, const char *data) {
         temperatureMode = MANUAL;
     else if(os_strstr(data, "a"))
         temperatureMode = AUTOMATIC;
+    save_status();
+    MQTT_Publish(&mqttClient, "mrostudios/devices/termo-1/mode/status", data, os_strlen(data), 1, 1);
 }
 
 static void ICACHE_FLASH_ATTR
@@ -135,11 +147,11 @@ mqttDataCb(uint32_t *args, const char *topic, uint32_t topic_len, const char *da
 
     if (os_strstr(topicBuf, "weather/851128/status")) {
         handlerWeather(topicBuf, dataBuf);
-    } else if (os_strstr(topicBuf, "mrostudios/termo-1/manualTemp")) {
+    } else if (os_strstr(topicBuf, "mrostudios/devices/termo-1/manualTemp/command")) {
         handleManualTemp(topicBuf, dataBuf);
-    } else if (os_strstr(topicBuf, "mrostudios/termo-1/autoTemp")) {
+    } else if (os_strstr(topicBuf, "mrostudios/devices/termo-1/autoTemp/command")) {
         handleAutoTemp(topicBuf, dataBuf);
-    } else if (os_strstr(topicBuf, "mrostudios/termo-1/mode")) {
+    } else if (os_strstr(topicBuf, "mrostudios/devices/termo-1/mode/command")) {
         handleMode(topicBuf, dataBuf);
     } else {
         INFO("Receive topic: %s, data: %s \r\n", topicBuf, dataBuf);
