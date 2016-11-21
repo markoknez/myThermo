@@ -43,12 +43,13 @@ mqtt.on('connect', function() {
 	mqtt.subscribe('mrostudios/+/config/weather');	
 });
 
-mqtt.on('message', function(topic, message) {	
-	console.log(topic + ' ->' + message + '<-');
-	if(topic.indexOf('config/weather') >= 0) {		
+mqtt.on('message', function(topic, messageData) {	
+	var message = messageData.toString();
+	if(topic.indexOf('config/weather') >= 0) {				
 		if(!_.isNaN(parseInt(message))) {
 			woeids.add(message);
-			console.log('Registered new woeid - ' + message);
+			console.log('Registered new woeid: ' + message);
+			console.log('Weoids register size: ' + woeids.size);			
 		}
 	}
 });
