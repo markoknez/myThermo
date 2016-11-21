@@ -48,7 +48,7 @@ mqtt.on('message', function(topic, messageData) {
 	if(topic.indexOf('config/weather') >= 0) {				
 		if(!_.isNaN(parseInt(message))) {
 			woeids.add(message);
-			console.log('Registered new woeid: ' + message);
+			console.log('New woeid received: ' + message);
 			console.log('Weoids register size: ' + woeids.size);			
 		}
 	}
