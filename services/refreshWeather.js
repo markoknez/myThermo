@@ -23,7 +23,7 @@ var refreshWeatherForWOEID = function(woeid) {
 		}
 		else {
 			console.log('Did not get expected data');
-			console.log(data);
+			console.log(data.toString());
 		}
 	}).on('error', function(err) {
 		console.log(err);
