@@ -20,7 +20,7 @@ var Device = mongoose.model('device', {
 
 
 var setupMqtt = function() {
-	var mqtt = mqttLib.connect('mqtt://test.mosquitto.org');
+	var mqtt = mqttLib.connect('mqtt://ec2.mrostudios.com');
 	mqtt.on('connect', function() {
 		mqtt.subscribe('mrostudios/devices/+/+/status');
 	});
