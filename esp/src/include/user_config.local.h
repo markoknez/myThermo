@@ -5,7 +5,7 @@
 
 /*DEFAULT CONFIGURATIONS*/
 
-#define MQTT_HOST     "test.mosquitto.org" //or "mqtt.yourdomain.com"
+#define MQTT_HOST     "ec2.mrostudios.com" //or "mqtt.yourdomain.com"
 #define MQTT_PORT     1883
 #define MQTT_BUF_SIZE   2048
 #define MQTT_KEEPALIVE    120  /*second*/

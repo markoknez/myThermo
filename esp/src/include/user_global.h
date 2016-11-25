@@ -67,6 +67,7 @@ uint32_t ntp_get_current_time(void);
 void ntp_set_time_offset(int32_t offset);
 void ntp_get_time_string(char *buffer);
 
+void temperatureEngine(void);
 
 void drawing_init(void);
 void draw_screen(void);
