@@ -8,13 +8,10 @@
 #include "mqtt.h"
 #include "auto_temp.h"
 
-extern u8g_t u8g;
-
-
 typedef enum {
     MANUAL,
     AUTOMATIC
-} temperatureControlMode;
+} TemperatureControlMode;
 
 
 extern uint32_t secondsFromRestart;
@@ -25,16 +22,12 @@ extern auto_state_t *currentState;
 extern MQTT_Client mqttClient;
 extern auto_state_t *states;
 extern uint16_t states_len;
-extern temperatureControlMode temperatureMode;
+extern TemperatureControlMode temperatureMode;
 extern int32_t ntpTimeOffset;
 
 extern int16_t manual_temp;
 
 extern uint32_t led_on;
-
-extern bool show_display;
-extern bool wifi_connected;
-extern bool heater_enabled;
 
 typedef enum {
 	GET = 0,
@@ -69,8 +62,7 @@ void ntp_get_time_string(char *buffer);
 
 void temperatureEngine(void);
 
-void drawing_init(void);
-void draw_screen(void);
+
 
 typedef bool (* webserver_handler)(struct espconn *conn, UrlFrame *url);
 

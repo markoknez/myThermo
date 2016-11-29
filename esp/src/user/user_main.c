@@ -10,6 +10,7 @@
 //*******************************************************************************/
 #include <my_temperature.h>
 #include <mqtt.h>
+#include <drawing.h>
 #include "ets_sys.h"
 #include "osapi.h"
 #include "mem.h"
@@ -20,15 +21,16 @@
 #include "fota.h"
 #include "auto_temp.h"
 #include "myFlashState.h"
+#include "drawing.h"
 
 #define THINGSPEAK_UPDATE_PERIOD_MS  30000
 
+DrawingState drawing;
+
 uint32_t secondsFromRestart = 0;
-bool wifi_connected = false;
-bool heater_enabled = false;
 os_timer_t secondTimer;
 
-temperatureControlMode temperatureMode = MANUAL;
+TemperatureControlMode temperatureMode = MANUAL;
 int16_t manual_temp = 1800;
 
 auto_state_t *currentState = NULL;
@@ -45,17 +47,13 @@ char *get_auto_temp(size_t *output_len);
 LOCAL ICACHE_FLASH_ATTR
 void set_heater(uint16_t targetTemp, uint16_t currentTemp) {
     if (currentTemp < targetTemp) {
-        heater_enabled = true;
-        return;
-    }
-
-    if (currentTemp > targetTemp) {
-        heater_enabled = false;
-        return;
+        drawingSetHeaterEnabled(&drawing, true);
+    } else {
+        drawingSetHeaterEnabled(&drawing, false);
     }
 
 
-    GPIO_OUTPUT_SET(GPIO_ID_PIN(2), heater_enabled ? 0 : 1);
+    GPIO_OUTPUT_SET(GPIO_ID_PIN(2), drawing.heaterEnabled ? 0 : 1);
 }
 
 LOCAL ICACHE_FLASH_ATTR
@@ -111,7 +109,7 @@ void second_counter(void) {
         lastSentTempearture = temperature_currentTemperature;
     }
 
-    if(mqttClient.pCon && secondsFromRestart % 10 == 0) {
+    if (mqttClient.pCon && secondsFromRestart % 10 == 0) {
         os_sprintf(buf, "%d", secondsFromRestart);
         MQTT_Publish(&mqttClient, "mrostudios/devices/termo-1/uptime/status", buf, os_strlen(buf), 0, 1);
     }
@@ -129,8 +127,8 @@ void wifi_status_handler(System_Event_t *evt) {
         case EVENT_STAMODE_GOT_IP:
             os_printf("connecting to mqtt\n");
             MQTT_Connect(&mqttClient);
-            wifi_connected = true;
-//            ntp_init();
+            drawingSetWifiConnected(&drawing, true);
+            ntp_init();
             os_printf("ip:"
                               IPSTR
                               ",mask:"
@@ -142,7 +140,7 @@ void wifi_status_handler(System_Event_t *evt) {
             break;
         case EVENT_STAMODE_DISCONNECTED:
             MQTT_Disconnect(&mqttClient);
-            wifi_connected = false;
+            drawingSetWifiConnected(&drawing, false);
             break;
         default:
             break;
@@ -152,6 +150,7 @@ void wifi_status_handler(System_Event_t *evt) {
 os_timer_t test;
 ICACHE_FLASH_ATTR
 void test_update() {
+    drawingSetUpgrade(&drawing, true);
     char ip[] = {192, 168, 1, 2};
     handleUpgrade(2, ip, 8080, "/");
 }
@@ -260,7 +259,6 @@ void app_init(void) {
     temperature_init();
     temperature_startReading();
 
-    drawing_init();
 
     //start seconds timer
     os_timer_disarm(&secondTimer);
