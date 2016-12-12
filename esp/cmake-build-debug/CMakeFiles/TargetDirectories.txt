@@ -1,0 +1,3 @@
+F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir
+F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/edit_cache.dir
+F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/rebuild_cache.dir

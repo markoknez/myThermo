@@ -1,0 +1,1 @@
+-llib/libdriver.a -llib/libgcc.a -llib/liblwip.a -llib/libphy.a -llib/libupgrade.a -llib/libmain.a -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 

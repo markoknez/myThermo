@@ -143,7 +143,7 @@ checkdirs: $(BUILD_DIR) $(FW_BASE)
 $(BUILD_DIR):
 	$(Q) mkdir -p $@
 
-flash: $(USER1_BIN)
+flash: $(USER1_BIN) $(USER2_BIN)
 	$(ESPTOOL) --port COM3 write_flash -ff 40m -fm qio -fs 32m-c1 0x00 $(SDK_BASE)/bin/boot_v1.6.bin 0x1000 $< 0x3fe000 $(SDK_BASE)/bin/blank.bin 0xfe000 $(SDK_BASE)/bin/blank.bin 0x3fc000 $(SDK_BASE)/bin/esp_init_data_default.bin 0xfc000 $(SDK_BASE)/bin/esp_init_data_default.bin
 
 rest: $(USER1_BIN) $(USER2_BIN)

@@ -64,20 +64,20 @@ void getNtpTime(struct espconn *conn) {
 
 ICACHE_FLASH_ATTR
 void ntp_timeout_handler(struct espconn *conn){
-	os_printf("ntp timeout... retrying...\n");
+	os_printf("[NTP] timeout... retrying...\n");
 	getNtpTime(conn);
 }
 
 ICACHE_FLASH_ATTR
 void ntp_send(struct espconn *conn, char *data, uint16_t len) {
 	espconn_sendto(conn, data, len);
-	os_printf("send request...\n");
+	os_printf("[NTP] send request...\n");
 }
 
 ICACHE_FLASH_ATTR
 void ntp_receive(void *ptr_conn, char *data, unsigned short len) {
 	os_timer_disarm(&ntp_timer);
-	os_printf("got response...\n");
+	os_printf("[NTP] got response...\n");
 	struct espconn *conn = ptr_conn;
 
 	uint32_t secondsFrom1900 = (data[40] << 24) | (data[41] << 16)
@@ -86,7 +86,7 @@ void ntp_receive(void *ptr_conn, char *data, unsigned short len) {
 
 	char buffer[10];
 	ntp_get_time_string(buffer);
-	os_printf("current time: %s\n", buffer);
+	os_printf("[NTP] current time: %s\n", buffer);
 
 	espconn_delete(conn);
 }

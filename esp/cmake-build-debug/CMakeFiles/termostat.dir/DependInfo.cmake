@@ -1,0 +1,96 @@
+# The set of languages for which implicit dependencies are needed:
+set(CMAKE_DEPENDS_LANGUAGES
+  "C"
+  )
+# The set of files for implicit dependencies of each language:
+set(CMAKE_DEPENDS_CHECK_C
+  "F:/Projekti/Doma/Termostat/source/esp/src/driver/base64.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/driver/base64.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/driver/ds1820.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/driver/ds1820.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/driver/i2c_master.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/driver/i2c_master.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/driver/key.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/driver/key.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/driver/one_wire.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/driver/one_wire.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/mqtt/mqtt.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/mqtt/mqtt.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/mqtt/mqtt_msg.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/mqtt/mqtt_msg.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/mqtt/proto.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/mqtt/proto.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/mqtt/queue.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/mqtt/queue.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/mqtt/ringbuf.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/mqtt/ringbuf.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/mqtt/utils.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/mqtt/utils.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/mqtt/wifi.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/mqtt/wifi.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_bitmap.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_bitmap.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_circle.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_circle.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_clip.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_clip.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_com_api.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_com_api.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_com_api_16gr.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_com_api_16gr.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_com_esp8266_ssd_i2c.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_com_esp8266_ssd_i2c.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_com_i2c.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_com_i2c.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_com_io.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_com_io.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_com_null.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_com_null.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_cursor.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_cursor.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_delay.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_delay.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_dev_null.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_dev_null.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_dev_ssd1306_128x64.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_dev_ssd1306_128x64.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_ellipse.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_ellipse.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_font.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_font.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_font_data.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_font_data.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_line.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_line.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_ll_api.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_ll_api.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_page.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_page.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_pb.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb14v1.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_pb14v1.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb16h1.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_pb16h1.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb16h2.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_pb16h2.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb16v1.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_pb16v1.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb16v2.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_pb16v2.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb32h1.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_pb32h1.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb8h1.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_pb8h1.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb8h1f.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_pb8h1f.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb8h2.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_pb8h2.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb8h8.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_pb8h8.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb8v1.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_pb8v1.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb8v2.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_pb8v2.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pbxh16.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_pbxh16.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pbxh24.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_pbxh24.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_polygon.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_polygon.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_rect.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_rect.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_rot.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_rot.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_scale.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_scale.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_state.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_state.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_u16toa.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_u16toa.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_u8toa.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_u8toa.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_virtual_screen.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/u8glib/u8g_virtual_screen.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/user/auto_temp.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/user/auto_temp.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/user/clionhelper.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/user/clionhelper.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/user/delay_task.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/user/delay_task.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/user/drawing.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/user/drawing.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/user/fota.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/user/fota.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/user/http_client.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/user/http_client.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/user/mqttMain.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/user/mqttMain.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/user/myFlashState.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/user/myFlashState.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/user/my_duckdns.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/user/my_duckdns.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/user/my_flash.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/user/my_flash.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/user/my_temperature.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/user/my_temperature.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/user/my_thingspeak.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/user/my_thingspeak.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/user/ntp.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/user/ntp.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/user/user_json.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/user/user_json.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/user/user_main.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/user/user_main.c.obj"
+  "F:/Projekti/Doma/Termostat/source/esp/src/user/web_server.c" "F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/CMakeFiles/termostat.dir/src/user/web_server.c.obj"
+  )
+set(CMAKE_C_COMPILER_ID "GNU")
+
+# The include file search paths:
+set(CMAKE_C_TARGET_INCLUDE_PATH
+  "../include"
+  "../src/include"
+  "../src/include/driver"
+  "../src/include/sll"
+  "../src/include/weather_icons"
+  "../src/include/cpp"
+  "../src/mqtt/include"
+  )
+
+# Targets to which this target links.
+set(CMAKE_TARGET_LINKED_INFO_FILES
+  )
+
+# Fortran module output directory.
+set(CMAKE_Fortran_TARGET_MODULE_DIR "")

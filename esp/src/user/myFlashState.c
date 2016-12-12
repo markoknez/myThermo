@@ -1,10 +1,13 @@
+#include <drawing.h>
 #include "osapi.h"
 #include "mem.h"
 
 #include "user_global.h"
 #include "myFlashState.h"
 #include "my_flash.h"
+#include "drawing.h"
 
+extern DrawingState drawingState;
 
 uint32_t SECTOR_STATUS = 0xFB;
 uint32_t SECTOR_STATES = 0xFC;
@@ -16,7 +19,7 @@ void save_status() {
     my_flash_writeValue16(data, states_len);
     my_flash_writeValue16(data + 2, ntpTimeOffset);
     data[4] = temperatureMode;
-    my_flash_writeValue16(data + 5, manual_temp);
+    my_flash_writeValue16(data + 5, drawingState.manualTemp);
     my_flash_writeValue32(data + 7, weather_woeid);
     data[11] = 0;
 
@@ -35,7 +38,7 @@ void read_status() {
     states_len = my_flash_readValue16(data);
     ntpTimeOffset = my_flash_readValue16(data + 2);
     temperatureMode = data[4];
-    manual_temp = my_flash_readValue16(data + 5);
+    drawingState.manualTemp = my_flash_readValue16(data + 5);
     weather_woeid = my_flash_readValue32(data + 7);
     //weather_setWoeid(weather_woeid);
     os_free(data);

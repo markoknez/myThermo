@@ -1,11 +1,16 @@
 #include <user_global.h>
+#include <fota.h>
+#include <drawing.h>
 #include "osapi.h"
 #include "mem.h"
 #include "auto_temp.h"
 #include "myFlashState.h"
+#include "mqttMain.h"
 
 auto_state_t *states = NULL;
 uint16_t states_len = 0;
+
+static void handleUpgradeMessage(char *buf, char *dataBuf);
 
 ICACHE_FLASH_ATTR
 uint32 user_rf_cal_sector_set(void) {
@@ -40,7 +45,7 @@ uint32 user_rf_cal_sector_set(void) {
 }
 
 
-LOCAL ICACHE_FLASH_ATTR
+static ICACHE_FLASH_ATTR
 void user_rf_pre_init(void) {
 }
 
@@ -59,6 +64,7 @@ static void ICACHE_FLASH_ATTR mqttConnectedCb(uint32_t *args) {
     MQTT_Subscribe(client, "mrostudios/devices/termo-1/autoTemp/command", 1);
     MQTT_Subscribe(client, "mrostudios/devices/termo-1/manualTemp/command", 1);
     MQTT_Subscribe(client, "mrostudios/devices/termo-1/mode/command", 1);
+    MQTT_Subscribe(client, "mrostudios/devices/termo-1/upgrade/command", 1);
     MQTT_Subscribe(client, "mrostudios/weather/851128/status", 1);
 }
 
@@ -73,10 +79,12 @@ static void ICACHE_FLASH_ATTR mqttPublishedCb(uint32_t *args) {
 }
 
 ICACHE_FLASH_ATTR
-void handlerWeather(const char *topic, const char *data) {
+static void handlerWeather(const char *topic, const char *data) {
     char *strIdx = data;
     uint32_t colonIdx = 0;
     char temp[64];
+    Weather weather;
+
     if(os_strlen(data) > 64) { INFO("Weather data too long\n"); return; }
 
     char *index = os_strstr(data, ";");
@@ -102,20 +110,21 @@ void handlerWeather(const char *topic, const char *data) {
     weather.text[colonIdx] = 0;
 
     INFO("Received weather: %d / %d / %s\n", weather.code, weather.temp, weather.text);
-
+    drawingSetWeather(&drawingState, &weather);
 }
 
 ICACHE_FLASH_ATTR
-void handleManualTemp(const char *topic, const char *data) {
-    INFO("Received manual temp: %d\n", data);
-    manual_temp = atoi(data);
+static void handleManualTemp(const char *topic, const char *data) {
+    INFO("Received manual temp: %s\n", data);
+    int16_t manualTemp = atoi(data);
     temperatureEngine();
     save_status();
     MQTT_Publish(&mqttClient, "mrostudios/devices/termo-1/manualTemp/status", data, os_strlen(data), 1, 1);
+    drawingSetManualTemp(&drawingState, manualTemp);
 }
 
 ICACHE_FLASH_ATTR
-void handleAutoTemp(const char* topic, const char *data) {
+static void handleAutoTemp(const char* topic, const char *data) {
     auto_state_t *newStates = autoTempDecode(data, strlen(data), &states_len);
     if(newStates != NULL) {
         if(states) os_free(states);
@@ -126,13 +135,25 @@ void handleAutoTemp(const char* topic, const char *data) {
 }
 
 ICACHE_FLASH_ATTR
-void handleMode(const char* topic, const char *data) {
+static void handleMode(const char* topic, const char *data) {
+    TemperatureControlMode temperatureMode;
     if(os_strstr(data, "m"))
         temperatureMode = MANUAL;
     else if(os_strstr(data, "a"))
         temperatureMode = AUTOMATIC;
     save_status();
+
     MQTT_Publish(&mqttClient, "mrostudios/devices/termo-1/mode/status", data, os_strlen(data), 1, 1);
+    drawingSetTempeartureMode(&drawingState, temperatureMode);
+}
+
+ICACHE_FLASH_ATTR
+static void handleUpgradeMessage(char *buf, char *dataBuf) {
+    INFO("Received upgrade command, starting upgrade %s\n", dataBuf);
+    char ip[] = {192, 168, 1, 2};
+    handleUpgrade(2, ip, 8080, dataBuf);
+    drawingSetUpgrade(&drawingState, true);
+
 }
 
 static void ICACHE_FLASH_ATTR
@@ -154,7 +175,9 @@ mqttDataCb(uint32_t *args, const char *topic, uint32_t topic_len, const char *da
         handleAutoTemp(topicBuf, dataBuf);
     } else if (os_strstr(topicBuf, "mrostudios/devices/termo-1/mode/command")) {
         handleMode(topicBuf, dataBuf);
-    } else {
+    } else if (os_strstr(topicBuf, "mrostudios/devices/termo-1/upgrade/command"))
+        handleUpgradeMessage(topicBuf, dataBuf);
+    else {
         INFO("Receive topic: %s, data: %s \r\n", topicBuf, dataBuf);
     }
 
@@ -163,7 +186,7 @@ mqttDataCb(uint32_t *args, const char *topic, uint32_t topic_len, const char *da
 
 }
 
-void ICACHE_FLASH_ATTR print_info() {
+static void ICACHE_FLASH_ATTR print_info() {
     INFO("\r\n\r\n[INFO] BOOTUP...\r\n");
     INFO("[INFO] SDK: %s\r\n", system_get_sdk_version());
     INFO("[INFO] Chip ID: %08X\r\n", system_get_chip_id());
@@ -176,7 +199,7 @@ void ICACHE_FLASH_ATTR print_info() {
 }
 
 
-void ICACHE_FLASH_ATTR start_mqtt(void) {
+void ICACHE_FLASH_ATTR mqttStart(void) {
     print_info();
 //    uart_init(BIT_RATE_115200, BIT_RATE_115200);
     MQTT_InitConnection(&mqttClient, MQTT_HOST, MQTT_PORT, DEFAULT_SECURITY);

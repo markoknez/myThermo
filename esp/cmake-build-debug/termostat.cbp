@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="termostat"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="termostat">
+				<Option output="F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/termostat.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="F:/Projekti/Doma/Termostat/source/esp/include"/>
+					<Add directory="F:/Projekti/Doma/Termostat/source/esp/src/include"/>
+					<Add directory="F:/Projekti/Doma/Termostat/source/esp/src/include/driver"/>
+					<Add directory="F:/Projekti/Doma/Termostat/source/esp/src/include/sll"/>
+					<Add directory="F:/Projekti/Doma/Termostat/source/esp/src/include/weather_icons"/>
+					<Add directory="F:/Projekti/Doma/Termostat/source/esp/src/include/cpp"/>
+					<Add directory="F:/Projekti/Doma/Termostat/source/esp/src/mqtt/include"/>
+					<Add directory="c:\mingw\bin\../lib/gcc/mingw32/4.9.3/include"/>
+					<Add directory="c:\mingw\bin\../lib/gcc/mingw32/4.9.3/../../../../include"/>
+					<Add directory="c:\mingw\bin\../lib/gcc/mingw32/4.9.3/include-fixed"/>
+					<Add directory="c:\mingw\bin\../lib/gcc/mingw32/4.9.3/include/c++"/>
+					<Add directory="c:\mingw\bin\../lib/gcc/mingw32/4.9.3/include/c++/mingw32"/>
+					<Add directory="c:\mingw\bin\../lib/gcc/mingw32/4.9.3/include/c++/backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 termostat"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="termostat/fast">
+				<Option output="F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/termostat.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="F:/Projekti/Doma/Termostat/source/esp/include"/>
+					<Add directory="F:/Projekti/Doma/Termostat/source/esp/src/include"/>
+					<Add directory="F:/Projekti/Doma/Termostat/source/esp/src/include/driver"/>
+					<Add directory="F:/Projekti/Doma/Termostat/source/esp/src/include/sll"/>
+					<Add directory="F:/Projekti/Doma/Termostat/source/esp/src/include/weather_icons"/>
+					<Add directory="F:/Projekti/Doma/Termostat/source/esp/src/include/cpp"/>
+					<Add directory="F:/Projekti/Doma/Termostat/source/esp/src/mqtt/include"/>
+					<Add directory="c:\mingw\bin\../lib/gcc/mingw32/4.9.3/include"/>
+					<Add directory="c:\mingw\bin\../lib/gcc/mingw32/4.9.3/../../../../include"/>
+					<Add directory="c:\mingw\bin\../lib/gcc/mingw32/4.9.3/include-fixed"/>
+					<Add directory="c:\mingw\bin\../lib/gcc/mingw32/4.9.3/include/c++"/>
+					<Add directory="c:\mingw\bin\../lib/gcc/mingw32/4.9.3/include/c++/mingw32"/>
+					<Add directory="c:\mingw\bin\../lib/gcc/mingw32/4.9.3/include/c++/backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 termostat/fast"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;F:/Projekti/Doma/Termostat/source/esp/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/driver/base64.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/driver/ds1820.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/driver/i2c_master.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/driver/key.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/driver/one_wire.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/mqtt/mqtt.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/mqtt/mqtt_msg.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/mqtt/proto.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/mqtt/queue.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/mqtt/ringbuf.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/mqtt/utils.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/mqtt/wifi.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_bitmap.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_circle.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_clip.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_com_api.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_com_api_16gr.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_com_esp8266_ssd_i2c.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_com_i2c.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_com_io.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_com_null.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_cursor.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_delay.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_dev_null.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_dev_ssd1306_128x64.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_ellipse.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_font.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_font_data.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_line.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_ll_api.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_page.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb14v1.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb16h1.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb16h2.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb16v1.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb16v2.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb32h1.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb8h1.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb8h1f.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb8h2.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb8h8.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb8v1.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pb8v2.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pbxh16.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_pbxh24.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_polygon.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_rect.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_rot.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_scale.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_state.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_u16toa.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_u8toa.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/u8glib/u8g_virtual_screen.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/user/auto_temp.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/user/clionhelper.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/user/delay_task.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/user/drawing.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/user/fota.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/user/http_client.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/user/mqttMain.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/user/myFlashState.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/user/my_duckdns.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/user/my_flash.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/user/my_temperature.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/user/my_thingspeak.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/user/ntp.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/user/user_json.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/user/user_main.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/src/user/web_server.c">
+			<Option target="termostat"/>
+		</Unit>
+		<Unit filename="F:/Projekti/Doma/Termostat/source/esp/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

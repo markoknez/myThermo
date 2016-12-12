@@ -11,7 +11,6 @@ ICACHE_FLASH_ATTR static void ota_finished_callback(void *arg);
 #define requestHeader "Connection: keep-alive\r\n\
 Cache-Control: no-cache\r\n\
 User-Agent: ESP8266\r\n\
-Accept: */*\r\n\
 Content-Type: application/json\r\n"
 
 void ota_finished_callback(void *arg) {

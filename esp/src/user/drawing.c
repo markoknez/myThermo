@@ -153,7 +153,7 @@ static void drawingRefreshIcons(DrawingState *state) {
     }
 
     if (state->weather.code != 255)
-        draw_weather_icon(state->weather.code);
+        draw_weather_icon(state);
 }
 
 ICACHE_FLASH_ATTR
@@ -161,8 +161,9 @@ static void draw_normal(DrawingState *state) {
     uint8_t buf[50];
     u8g_SetColorIndex(&(state->u8g), 1);
 
-    uint8_t iconWidth = 40;
+    drawingRefreshIcons(state);
 
+    uint8_t iconWidth = 40;
     //current measured temperature
     u8g_SetFont(&(state->u8g), u8g_font_helvB18);
     u8g_SetFontPosTop(&(state->u8g));

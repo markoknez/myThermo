@@ -1,7 +1,6 @@
 #ifndef TERMOSTAT_USER_GLOBAL_H
 #define TERMOSTAT_USER_GLOBAL_H
 
-
 #include "u8g.h"
 #include "user_interface.h"
 #include "espconn.h"
@@ -24,8 +23,6 @@ extern auto_state_t *states;
 extern uint16_t states_len;
 extern TemperatureControlMode temperatureMode;
 extern int32_t ntpTimeOffset;
-
-extern int16_t manual_temp;
 
 extern uint32_t led_on;
 
@@ -50,8 +47,6 @@ typedef struct {
 	int16_t temp;
 	char text[64];
 } Weather;
-
-Weather weather;
 
 void ntp_init(void);
 void ntp_connect(void);
