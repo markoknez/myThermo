@@ -5,4 +5,8 @@ extern DrawingState drawingState;
 
 void mqttStart();
 
+void mqttPublishCurrentTemp(MQTT_Client *mqttClient, int16_t temperature);
+void mqttPublishMode(MQTT_Client *mqttClient, char mode);
+void mqttPublishUptime(MQTT_Client *mqttClient, uint32_t uptime);
+
 #endif //TERMOSTAT_MQTTMAIN_H

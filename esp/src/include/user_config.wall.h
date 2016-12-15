@@ -1,12 +1,14 @@
 #ifndef __MQTT_CONFIG_H__
 #define __MQTT_CONFIG_H__
 
+#include "eagle_soc.h"
+
 #define MQTT_SSL_ENABLE
 
 /*DEFAULT CONFIGURATIONS*/
 
 #ifndef MQTT_DEVICEID
-#define MQTT_DEVICEID "termo-1"
+#define MQTT_DEVICEID "termo-2"
 #endif
 
 #define MQTT_HOST     "ec2.mrostudios.com" //or "mqtt.yourdomain.com"
@@ -26,17 +28,17 @@
 #define OLED_SDA_MUX    PERIPHS_IO_MUX_GPIO4_U
 #define OLED_SDA_FUNC   FUNC_GPIO4
 #define OLED_SDA_GPIO   4
-#define OLED_SCL_MUX    PERIPHS_IO_MUX_MTMS_U
-#define OLED_SCL_FUNC   FUNC_GPIO14
-#define OLED_SCL_GPIO   14
+#define OLED_SCL_MUX    PERIPHS_IO_MUX_GPIO5_U
+#define OLED_SCL_FUNC   FUNC_GPIO5
+#define OLED_SCL_GPIO   5
 
-#define RELAY_MUX   PERIPHS_IO_MUX_GPIO2_U
-#define RELAY_FUNC  FUNC_GPIO2
-#define RELAY_GPIO  2
+#define RELAY_MUX   PERIPHS_IO_MUX_MTDI_U
+#define RELAY_FUNC  FUNC_GPIO12
+#define RELAY_GPIO  12
 
-#define TEMP_MUX    PERIPHS_IO_MUX_GPIO5_U
-#define TEMP_FUNC   FUNC_GPIO5
-#define TEMP_GPIO   5
+#define TEMP_MUX    PERIPHS_IO_MUX_MTMS_U
+#define TEMP_FUNC   FUNC_GPIO14
+#define TEMP_GPIO   14
 
 #define MQTT_RECONNECT_TIMEOUT  5 /*second*/
 

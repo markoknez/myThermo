@@ -36,7 +36,7 @@ void set_heater(uint16_t targetTemp, uint16_t currentTemp) {
     }
 
 
-    GPIO_OUTPUT_SET(GPIO_ID_PIN(2), drawingState.heaterEnabled ? 0 : 1);
+    GPIO_OUTPUT_SET(GPIO_ID_PIN(RELAY_GPIO), drawingState.heaterEnabled ? 0 : 1);
 }
 
 LOCAL ICACHE_FLASH_ATTR
@@ -72,7 +72,7 @@ void temperatureEngine(void) {
         if (currentState == NULL) {
             temperatureMode = MANUAL;
             drawingSetTempeartureMode(&drawingState, temperatureMode);
-            MQTT_Publish(&mqttClient, "mrostudios/devices/termo-1/mode/status", "m", 1, 0, 1);
+            mqttPublishMode(&mqttClient, 'm');
             return;
         }
         set_heater(currentState->temp, temperature_currentTemperature);
@@ -80,24 +80,21 @@ void temperatureEngine(void) {
     }
 }
 
-int16_t lastSentTempearture = 0;
+int16_t lastSentTemperature = 0;
 
 LOCAL ICACHE_FLASH_ATTR
 void second_counter(void) {
     secondsFromRestart++;
     unixSeconds++;
 
-    char buf[10];
-    if (mqttClient.pCon && lastSentTempearture != temperature_currentTemperature) {
-        os_sprintf(buf, "%d.%02d", temperature_currentTemperature / 100, abs(temperature_currentTemperature % 100));
-        MQTT_Publish(&mqttClient, "mrostudios/devices/termo-1/currentTemp/status", buf, os_strlen(buf), 0, 1);
-        lastSentTempearture = temperature_currentTemperature;
+    if (mqttClient.pCon && lastSentTemperature != temperature_currentTemperature) {
+        mqttPublishCurrentTemp(&mqttClient, temperature_currentTemperature);
+        lastSentTemperature = temperature_currentTemperature;
         drawingSetCurrentTemp(&drawingState, temperature_currentTemperature);
     }
 
     if (mqttClient.pCon && secondsFromRestart % 10 == 0) {
-        os_sprintf(buf, "%d", secondsFromRestart);
-        MQTT_Publish(&mqttClient, "mrostudios/devices/termo-1/uptime/status", buf, os_strlen(buf), 0, 1);
+        mqttPublishUptime(&mqttClient, secondsFromRestart);
     }
 
     temperatureEngine();
@@ -152,7 +149,7 @@ void app_init(void) {
     os_printf("Hello from clion!!!\n");
 
     gpio_init();
-    PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO2_U, FUNC_GPIO2);
+    PIN_FUNC_SELECT(RELAY_MUX, RELAY_FUNC);
 
     os_printf("SDK version:%s\n\n", system_get_sdk_version());
 
@@ -168,10 +165,8 @@ void app_init(void) {
 
     struct station_config config;
     config.bssid_set = 0;  //do net check MAC address of AP
-    char ssid[32] = "a+mNET";
-    char pass[64] = "rtm29a+m";
-    os_strncpy(config.ssid, ssid, 32);
-    os_strncpy(config.password, pass, 64);
+    os_strncpy(config.ssid, STA_SSID, 32);
+    os_strncpy(config.password, STA_PASS, 64);
 
     read_status();
     read_states();

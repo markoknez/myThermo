@@ -7,6 +7,7 @@
 #include "myFlashState.h"
 #include "mqttMain.h"
 
+
 auto_state_t *states = NULL;
 uint16_t states_len = 0;
 
@@ -61,10 +62,10 @@ static void ICACHE_FLASH_ATTR wifiConnectCb(uint8_t status) {
 static void ICACHE_FLASH_ATTR mqttConnectedCb(uint32_t *args) {
     MQTT_Client *client = (MQTT_Client *) args;
     INFO("MQTT: Connected\r\n");
-    MQTT_Subscribe(client, "mrostudios/devices/termo-1/autoTemp/command", 1);
-    MQTT_Subscribe(client, "mrostudios/devices/termo-1/manualTemp/command", 1);
-    MQTT_Subscribe(client, "mrostudios/devices/termo-1/mode/command", 1);
-    MQTT_Subscribe(client, "mrostudios/devices/termo-1/upgrade/command", 1);
+    MQTT_Subscribe(client, "mrostudios/devices/"MQTT_DEVICEID"/autoTemp/command", 1);
+    MQTT_Subscribe(client, "mrostudios/devices/"MQTT_DEVICEID"/manualTemp/command", 1);
+    MQTT_Subscribe(client, "mrostudios/devices/"MQTT_DEVICEID"/mode/command", 1);
+    MQTT_Subscribe(client, "mrostudios/devices/"MQTT_DEVICEID"/upgrade/command", 1);
     MQTT_Subscribe(client, "mrostudios/weather/851128/status", 1);
 }
 
@@ -85,7 +86,10 @@ static void handlerWeather(const char *topic, const char *data) {
     char temp[64];
     Weather weather;
 
-    if(os_strlen(data) > 64) { INFO("Weather data too long\n"); return; }
+    if (os_strlen(data) > 64) {
+        INFO("Weather data too long\n");
+        return;
+    }
 
     char *index = os_strstr(data, ";");
     if (index == NULL) return;
@@ -119,31 +123,31 @@ static void handleManualTemp(const char *topic, const char *data) {
     int16_t manualTemp = atoi(data);
     temperatureEngine();
     save_status();
-    MQTT_Publish(&mqttClient, "mrostudios/devices/termo-1/manualTemp/status", data, os_strlen(data), 1, 1);
+    MQTT_Publish(&mqttClient, "mrostudios/devices/"MQTT_DEVICEID"/manualTemp/status", data, os_strlen(data), 1, 1);
     drawingSetManualTemp(&drawingState, manualTemp);
 }
 
 ICACHE_FLASH_ATTR
-static void handleAutoTemp(const char* topic, const char *data) {
+static void handleAutoTemp(const char *topic, const char *data) {
     auto_state_t *newStates = autoTempDecode(data, strlen(data), &states_len);
-    if(newStates != NULL) {
-        if(states) os_free(states);
+    if (newStates != NULL) {
+        if (states) os_free(states);
         states = newStates;
         save_states();
-        MQTT_Publish(&mqttClient, "mrostudios/devices/termo-1/autoTemp/status", data, os_strlen(data), 1, 1);
+        MQTT_Publish(&mqttClient, "mrostudios/devices/"MQTT_DEVICEID"/autoTemp/status", data, os_strlen(data), 1, 1);
     }
 }
 
 ICACHE_FLASH_ATTR
-static void handleMode(const char* topic, const char *data) {
+static void handleMode(const char *topic, const char *data) {
     TemperatureControlMode temperatureMode;
-    if(os_strstr(data, "m"))
+    if (os_strstr(data, "m"))
         temperatureMode = MANUAL;
-    else if(os_strstr(data, "a"))
+    else if (os_strstr(data, "a"))
         temperatureMode = AUTOMATIC;
     save_status();
 
-    MQTT_Publish(&mqttClient, "mrostudios/devices/termo-1/mode/status", data, os_strlen(data), 1, 1);
+    MQTT_Publish(&mqttClient, "mrostudios/devices/"MQTT_DEVICEID"/mode/status", data, os_strlen(data), 1, 1);
     drawingSetTempeartureMode(&drawingState, temperatureMode);
 }
 
@@ -169,13 +173,13 @@ mqttDataCb(uint32_t *args, const char *topic, uint32_t topic_len, const char *da
 
     if (os_strstr(topicBuf, "weather/851128/status")) {
         handlerWeather(topicBuf, dataBuf);
-    } else if (os_strstr(topicBuf, "mrostudios/devices/termo-1/manualTemp/command")) {
+    } else if (os_strstr(topicBuf, "mrostudios/devices/"MQTT_DEVICEID"/manualTemp/command")) {
         handleManualTemp(topicBuf, dataBuf);
-    } else if (os_strstr(topicBuf, "mrostudios/devices/termo-1/autoTemp/command")) {
+    } else if (os_strstr(topicBuf, "mrostudios/devices/"MQTT_DEVICEID"/autoTemp/command")) {
         handleAutoTemp(topicBuf, dataBuf);
-    } else if (os_strstr(topicBuf, "mrostudios/devices/termo-1/mode/command")) {
+    } else if (os_strstr(topicBuf, "mrostudios/devices/"MQTT_DEVICEID"/mode/command")) {
         handleMode(topicBuf, dataBuf);
-    } else if (os_strstr(topicBuf, "mrostudios/devices/termo-1/upgrade/command"))
+    } else if (os_strstr(topicBuf, "mrostudios/devices/"MQTT_DEVICEID"/upgrade/command"))
         handleUpgradeMessage(topicBuf, dataBuf);
     else {
         INFO("Receive topic: %s, data: %s \r\n", topicBuf, dataBuf);
@@ -212,4 +216,22 @@ void ICACHE_FLASH_ATTR mqttStart(void) {
     MQTT_OnDisconnected(&mqttClient, mqttDisconnectedCb);
     MQTT_OnPublished(&mqttClient, mqttPublishedCb);
     MQTT_OnData(&mqttClient, mqttDataCb);
+}
+
+void mqttPublishCurrentTemp(MQTT_Client *mqttClient, int16_t temperature) {
+    char buf[16];
+    os_sprintf(buf, "%d.%02d", temperature / 100, abs(temperature % 100));
+    MQTT_Publish(mqttClient, "mrostudios/devices/"MQTT_DEVICEID"/currentTemp/status", buf, os_strlen(buf), 0, 1);
+}
+
+void mqttPublishMode(MQTT_Client *mqttClient, char mode) {
+    char *str = "\0\0";
+    str[0] = mode;
+    MQTT_Publish(mqttClient, "mrostudios/devices/"MQTT_DEVICEID"/mode/status", str, 1, 0, 1);
+}
+
+void mqttPublishUptime(MQTT_Client *mqttClient, uint32_t uptime) {
+    char buf[16];
+    os_sprintf(buf, "%d", uptime);
+    MQTT_Publish(mqttClient, "mrostudios/devices/"MQTT_DEVICEID"/uptime/status", buf, os_strlen(buf), 0, 1);
 }

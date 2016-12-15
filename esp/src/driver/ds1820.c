@@ -4,6 +4,7 @@
 #include "mem.h"
 #include "osapi.h"
 #include "user_interface.h"
+#include "user_config_base.h"
 
 #include "gpio.h"
 
@@ -106,20 +107,20 @@ void ds_request_temp(uint8_t *address) {
 ICACHE_FLASH_ATTR
 void ds_init() {
 	//set gpio2 as gpio pin
-	PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO5_U, FUNC_GPIO5);
+	PIN_FUNC_SELECT(TEMP_MUX, TEMP_FUNC);
 
 	//disable pulldown
 //	PIN_PULLDWN_DIS(PERIPHS_IO_MUX_GPIO0_U);
 
 //enable pull up R
-	PIN_PULLUP_EN(PERIPHS_IO_MUX_GPIO5_U);
+	PIN_PULLUP_EN(TEMP_MUX);
 
 	// Configure the GPIO with internal pull-up
 	// PIN_PULLUP_EN( gpio );./g
 
-	GPIO_DIS_OUTPUT(5);
+	GPIO_DIS_OUTPUT(gpioPin);
 
-	gpioPin = 5;
+	gpioPin = TEMP_GPIO;
 }
 
 ICACHE_FLASH_ATTR
