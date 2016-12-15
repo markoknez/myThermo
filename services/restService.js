@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 winston.level = 'debug';
 winston.cli();
 
-mongoose.connect('mongodb://localhost/thermo');
+mongoose.connect('mongodb://ec2.mrostudios.com/thermo');
 var dbConnection = mongoose.connection;
 dbConnection.on('error', function(err) {
 	winston.error("Error connecting to mongodb %j", err);
@@ -22,15 +22,28 @@ const app = express();
 const apiRouter = express.Router();
 
 apiRouter.get('/tempHistory/:id', function(req, res, next) {
-	db.TemperatureHistory
-		.find({deviceId : req.params.id})
-		.exec(function(err, temps) {
-			temps.forEach(function (temp) {
-				res.write(util.format('%d,%d\n',temp.time, temp.temp));
-			});
-			res.status(200);
-			res.end();
+	var query = db.TemperatureHistory
+		.find({
+			deviceId: req.params.id
+		})
+		.sort({
+			time : 'asc'
+		});		
+
+	if (req.query.limit) query = query.limit(parseInt(req.query.limit));
+	if (req.query.from) query = query.where({
+		time: {
+			$gt: parseInt(req.query.from)
+		}
+	});
+
+	query.exec(function(err, temps) {
+		temps.forEach(function(temp) {
+			res.write(util.format('%d,%d\n', temp.time, temp.temp));
 		});
+		res.status(200);
+		res.end();
+	});
 });
 
 apiRouter.get('/devices', function(req, res, next) {
