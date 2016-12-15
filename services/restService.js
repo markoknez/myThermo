@@ -1,5 +1,6 @@
 var listeningPort = 8085;
 
+const util = require('util');
 const winston = require('./logging.js');
 const express = require('express');
 const db = require('./dbModel.js');
@@ -19,6 +20,18 @@ dbConnection.once('open', function() {
 
 const app = express();
 const apiRouter = express.Router();
+
+apiRouter.get('/tempHistory/:id', function(req, res, next) {
+	db.TemperatureHistory
+		.find({deviceId : req.params.id})
+		.exec(function(err, temps) {
+			temps.forEach(function (temp) {
+				res.write(util.format('%d,%d\n',temp.time, temp.temp));
+			});
+			res.status(200);
+			res.end();
+		});
+});
 
 apiRouter.get('/devices', function(req, res, next) {
 	db.Device
