@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var mqttLib = require('mqtt');
-var winston = require('winston');
+var winston = require('./logging.js');
 
 winston.level = 'debug';
 winston.cli();

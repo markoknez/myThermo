@@ -1,7 +1,7 @@
 var client = new(require('node-rest-client').Client)();
 var mqttLib = require('mqtt');
 var mqtt = mqttLib.connect('mqtt://test.mosquitto.org');
-var winston = require('winston');
+var winston = require('./logging.js');
 var _ = require('underscore');
 
 var WEATHER_REFRESH_INTERVAL = 5 * 60 * 1000;
