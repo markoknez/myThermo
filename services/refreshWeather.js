@@ -1,6 +1,7 @@
 var client = new(require('node-rest-client').Client)();
 var mqttLib = require('mqtt');
 var mqtt = mqttLib.connect('mqtt://test.mosquitto.org');
+var winston = require('winston');
 var _ = require('underscore');
 
 var WEATHER_REFRESH_INTERVAL = 5 * 60 * 1000;
@@ -15,23 +16,21 @@ var refreshWeatherForWOEID = function(woeid) {
 		}
 	}, function(data, response) {		
 		if (data && data.query && data.query.count == 1) {
-			console.log('Got response for woeid ' + woeid);
-			console.log(data.query.results.channel.item.condition);
+			winston.debug('Got response for woeid %s %s', woeid, data.query.results.channel.item.condition);
 			var c = data.query.results.channel.item.condition;
 
 			mqtt.publish('mrostudios/weather/' + woeid + '/status', '{1};{2};{3};'.replace('{1}',c.code).replace('{2}',c.temp).replace('{3}',c.text), {retain : true});
 		}
 		else {
-			console.log('Did not get expected data');
-			console.log(data.toString());
+			winston.error('Did not get expected data %s', data.toString());			
 		}
 	}).on('error', function(err) {
-		console.log(err);
+		winston.error('Error while fetching weather data for %s %j', woeid, err);
 	});
 }
 
 var refreshWeather = function() {
-	console.log('Refreshing weather, number of entries ' + woeids.size);
+	winston.info('Refreshing weather, number of entries %s', woeids.size);
 	for(id of woeids) {
 		refreshWeatherForWOEID(id);
 	}
@@ -48,9 +47,10 @@ mqtt.on('message', function(topic, messageData) {
 	if(topic.indexOf('config/weather') >= 0) {				
 		if(!_.isNaN(parseInt(message))) {
 			woeids.add(message);
-			console.log('New woeid received: ' + message);
-			console.log('Weoids register size: ' + woeids.size);			
-		}
+			winston.debug('New woeid received: %s, register size %d', message, woeids.size);			
+		} else {
+			winston.error('Got wrong woeid - %s', message);
+		}		
 	}
 });
 
