@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var db = require('./dbModel.js');
 var mqttLib = require('mqtt');
 var winston = require('./logging.js');
 
@@ -6,32 +7,18 @@ winston.level = 'debug';
 winston.cli();
 
 mongoose.connect('mongodb://localhost/thermo');
-var db = mongoose.connection;
-db.on('error', function (err) { winston.error("Error connecting to mongodb. %j", err); });
-db.once('open', function() {
+var dbConnection = mongoose.connection;
+dbConnection.on('error', function (err) { winston.error("Error connecting to mongodb %j", err); });
+dbConnection.once('open', function() {
 	winston.info("Connected to mongodb");
 	setupMqtt();
 });
 
-var TemperatureHistory = mongoose.model('tempHistory', {
-	deviceId : String,
-	temp : Number,
-	time : Number
-});
 
-var Device = mongoose.model('device', {
-	deviceId: String,
-	currentTemp: String,
-	manualTemp: String,
-	mode: String,
-	autoTemp: String,
-	uptime: String,
-	tempHistory: []
-});
 
 var writeCurrentTempToDB = function(deviceId, currentTemp) {	
 	winston.debug("Writing temp to history: %s, %s", deviceId, currentTemp);
-	TemperatureHistory.create({
+	db.TemperatureHistory.create({
 		deviceId: deviceId,
 		temp : currentTemp,
 		time : Date.now()
@@ -67,7 +54,7 @@ var setupMqtt = function() {
 		};
 		updatedDevice[attribute] = message;
 		winston.debug("Updating device, %s, %j", deviceId, updatedDevice);
-		Device.findOneAndUpdate({
+		db.Device.findOneAndUpdate({
 				deviceId: deviceId
 			}, updatedDevice, {
 				upsert: true
