@@ -21,15 +21,12 @@
 #include "auto_temp.h"
 #include "myFlashState.h"
 
-#define WEATHER_TIMEOUT_S            60*10         //10 minutes reload time for weather information
-
 #define THINGSPEAK_UPDATE_PERIOD_MS  30000
 
 uint32_t secondsFromRestart = 0;
 bool wifi_connected = false;
 bool heater_enabled = false;
 os_timer_t secondTimer;
-uint32_t led_on = 0;
 
 temperatureControlMode temperatureMode = MANUAL;
 int16_t manual_temp = 1800;
@@ -56,6 +53,9 @@ void set_heater(uint16_t targetTemp, uint16_t currentTemp) {
         heater_enabled = false;
         return;
     }
+
+
+    GPIO_OUTPUT_SET(GPIO_ID_PIN(2), heater_enabled ? 0 : 1);
 }
 
 LOCAL ICACHE_FLASH_ATTR
@@ -81,7 +81,7 @@ auto_state_t *findCurrentState(void) {
     return &states[states_len - 1];
 }
 
-LOCAL ICACHE_FLASH_ATTR
+ICACHE_FLASH_ATTR
 void temperatureEngine(void) {
     if (temperatureMode == MANUAL) {
         set_heater(manual_temp, temperature_currentTemperature);
@@ -121,8 +121,6 @@ void second_counter(void) {
 //    }
 
     temperatureEngine();
-
-    GPIO_OUTPUT_SET(GPIO_ID_PIN(2), led_on ? 0 : 1);
 }
 
 LOCAL ICACHE_FLASH_ATTR

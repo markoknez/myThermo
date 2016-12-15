@@ -109,6 +109,7 @@ ICACHE_FLASH_ATTR
 void handleManualTemp(const char *topic, const char *data) {
     INFO("Received manual temp: %d\n", data);
     manual_temp = atoi(data);
+    temperatureEngine();
     save_status();
     MQTT_Publish(&mqttClient, "mrostudios/devices/termo-1/manualTemp/status", data, os_strlen(data), 1, 1);
 }
