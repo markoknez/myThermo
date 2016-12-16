@@ -38,7 +38,8 @@ apiRouter.get('/tempHistory/:id', function(req, res, next) {
 	});
 
 	query.exec(function(err, temps) {
-		temps.forEach(function(temp) {
+		res.write('time,temp\n');
+		temps.forEach(function(temp) {			
 			res.write(util.format('%d,%d\n', temp.time, temp.temp));
 		});
 		res.status(200);
