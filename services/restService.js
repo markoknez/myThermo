@@ -21,6 +21,12 @@ dbConnection.once('open', function() {
 const app = express();
 const apiRouter = express.Router();
 
+apiRouter.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 apiRouter.get('/tempHistory/:id', function(req, res, next) {
 	var query = db.TemperatureHistory
 		.find({
