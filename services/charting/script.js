@@ -1,31 +1,11 @@
-function parseCSV(csv) {
-	var data = [];
-	var lines = csv.split('\n');
-	for (var i = 1; i < lines.length; i++) {
-		var values = lines[i].split(',');
-		data.push([parseInt(values[0]), parseFloat(values[1])]);
-	}
-	return data;
-}
-
-
-function getThermoData(deviceId) {
-	return $.get('http://thermo.mrostudios.com/rest/api/temphistory/' + deviceId + '?from=' + (Date.now() - 3600000 * 24)).then(function(csv) {
-		return {name : deviceId, data: parseCSV(csv)};
-	}, console.error);
-}
-
-function getDevices() {
-	return $.getJSON('http://thermo.mrostudios.com/rest/api/devices');
-}
-
 $(function() {	
-	getDevices()
+	var restClient = new RestClient();
+	restClient.devices()
 		.then(devices => {
 			var promises = [];
 			devices.forEach(device => {
 				var deviceId = device.deviceId;
-				promises.push(getThermoData(deviceId));
+				promises.push(restClient.tempData(deviceId));
 			});
 			return Promise.all(promises);
 		})
