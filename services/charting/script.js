@@ -11,25 +11,39 @@ function parseCSV(csv) {
 
 function getThermoData(deviceId) {
 	return $.get('http://thermo.mrostudios.com/rest/api/temphistory/' + deviceId + '?from=' + (Date.now() - 3600000 * 24)).then(function(csv) {
-		return parseCSV(csv);
+		return {name : deviceId, data: parseCSV(csv)};
 	}, console.error);
 }
 
-$(function() {
-	var d = {};
-	getThermoData('termo-1')
-		.then(function (data) {
-			d.t1 = data;
-			return getThermoData('termo-2');
-		})
-		.then(function (data) {
-			d.t2 = data;
-			return d;			
-		})
-		.then(function (d) {		
+function getDevices() {
+	return $.getJSON('http://thermo.mrostudios.com/rest/api/devices');
+}
 
+$(function() {	
+	getDevices()
+		.then(devices => {
+			var promises = [];
+			devices.forEach(device => {
+				var deviceId = device.deviceId;
+				promises.push(getThermoData(deviceId));
+			});
+			return Promise.all(promises);
+		})
+		.then(d => {		
 		// Create a timer
 		var start = +new Date();
+
+		var series = [];
+		d.forEach(item => {
+			series.push({
+				name: item.name,
+				data: item.data,
+				pointStart: item.data[0][0],
+				tooltip: {
+					valueDecimals: 1,
+					valueSuffix: '°C'
+				}});
+		});
 
 		// Create the chart
 		Highcharts.stockChart('container', {
@@ -86,25 +100,7 @@ $(function() {
 			subtitle: {
 				text: ''
 			},
-
-			series: [{
-				name: 'termo-1',
-				data: d.t1,
-				pointStart: d.t1[0][0],
-				tooltip: {
-					valueDecimals: 1,
-					valueSuffix: '°C'
-				}
-			}, {
-				name: 'termo-2',
-				data: d.t2,
-				pointStart: d.t2[0][0],
-				tooltip: {
-					valueDecimals: 1,
-					valueSuffix: '°C'
-				}
-			}]
-
+			series : series
 		});
 	});
 });
