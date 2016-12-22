@@ -221,17 +221,28 @@ void ICACHE_FLASH_ATTR mqttStart(void) {
 void mqttPublishCurrentTemp(MQTT_Client *mqttClient, int16_t temperature) {
     char buf[16];
     os_sprintf(buf, "%d.%02d", temperature / 100, abs(temperature % 100));
-    MQTT_Publish(mqttClient, "mrostudios/devices/"MQTT_DEVICEID"/currentTemp/status", buf, os_strlen(buf), 0, 1);
+    MQTT_Publish(mqttClient, "mrostudios/devices/"MQTT_DEVICEID"/currentTemp/status", buf, os_strlen(buf), 1, 1);
 }
 
 void mqttPublishMode(MQTT_Client *mqttClient, char mode) {
     char *str = "\0\0";
     str[0] = mode;
-    MQTT_Publish(mqttClient, "mrostudios/devices/"MQTT_DEVICEID"/mode/status", str, 1, 0, 1);
+    MQTT_Publish(mqttClient, "mrostudios/devices/"MQTT_DEVICEID"/mode/status", str, 1, 1, 1);
 }
 
 void mqttPublishUptime(MQTT_Client *mqttClient, uint32_t uptime) {
     char buf[16];
     os_sprintf(buf, "%d", uptime);
-    MQTT_Publish(mqttClient, "mrostudios/devices/"MQTT_DEVICEID"/uptime/status", buf, os_strlen(buf), 0, 1);
+    MQTT_Publish(mqttClient, "mrostudios/devices/"MQTT_DEVICEID"/uptime/status", buf, os_strlen(buf), 1, 1);
+}
+
+bool lastHeaterState = false;
+void mqttPublishHeater(MQTT_Client *mqttClient, bool isEnabled) {
+    if(isEnabled && lastHeaterState == false)
+        MQTT_Publish(mqttClient, "mrostudios/devices/"MQTT_DEVICEID"/heater/status", "true", 4, 1, 1);
+
+    if(!isEnabled && lastHeaterState == true)
+        MQTT_Publish(mqttClient, "mrostudios/devices/"MQTT_DEVICEID"/heater/status", "false", 5, 1, 1);
+
+    lastHeaterState = isEnabled;
 }

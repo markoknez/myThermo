@@ -24,17 +24,21 @@ os_timer_t secondTimer;
 
 TemperatureControlMode temperatureMode = MANUAL;
 
+
+
 auto_state_t *currentState = NULL;
 MQTT_Client mqttClient;
 
+bool isHeating = false;
 LOCAL ICACHE_FLASH_ATTR
 void set_heater(uint16_t targetTemp, uint16_t currentTemp) {
     if (currentTemp < targetTemp) {
         drawingSetHeaterEnabled(&drawingState, true);
+        mqttPublishHeater(&mqttClient, true);
     } else {
         drawingSetHeaterEnabled(&drawingState, false);
+        mqttPublishHeater(&mqttClient, false);
     }
-
 
     GPIO_OUTPUT_SET(GPIO_ID_PIN(RELAY_GPIO), drawingState.heaterEnabled ? 0 : 1);
 }
