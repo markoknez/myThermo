@@ -1,6 +1,7 @@
+var config = require('./config.js');
 var client = new(require('node-rest-client').Client)();
 var mqttLib = require('mqtt');
-var mqtt = mqttLib.connect('mqtt://ec2.mrostudios.com');
+var mqtt = mqttLib.connect('mqtt://ec2.mrostudios.com', {username : config.mqttWeatherUsername, password : config.mqttWeatherPassword});
 var winston = require('./logging.js');
 var _ = require('underscore');
 
@@ -39,12 +40,12 @@ var refreshWeather = function() {
 };
 
 mqtt.on('connect', function() {
-	mqtt.subscribe('mrostudios/+/config/weather');	
+	mqtt.subscribe('mrostudios/devices/+/weather/status');	
 });
 
 mqtt.on('message', function(topic, messageData) {	
 	var message = messageData.toString();
-	if(topic.indexOf('config/weather') >= 0) {				
+	if(topic.indexOf('weather/status') >= 0) {				
 		if(!_.isNaN(parseInt(message))) {
 			woeids.add(message);
 			winston.debug('New woeid received: %s, register size %d', message, woeids.size);			

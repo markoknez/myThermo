@@ -1,10 +1,8 @@
+var config = require('./config.js');
 var mongoose = require('mongoose');
 var db = require('./dbModel.js');
 var mqttLib = require('mqtt');
 var winston = require('./logging.js');
-
-winston.level = 'debug';
-winston.cli();
 
 mongoose.connect('mongodb://localhost/thermo');
 var dbConnection = mongoose.connection;
@@ -26,7 +24,7 @@ var writeCurrentTempToDB = function(deviceId, currentTemp) {
 };
 
 var setupMqtt = function() {
-	var mqtt = mqttLib.connect('mqtt://ec2.mrostudios.com');
+	var mqtt = mqttLib.connect('mqtt://ec2.mrostudios.com', {username : config.mqttMongodbUsername, password : config.mqttMongodbPassword});
 	mqtt.on('connect', function() {
 		winston.info("Connected to mqtt");
 		mqtt.subscribe('mrostudios/devices/+/+/status');
@@ -44,6 +42,9 @@ var setupMqtt = function() {
 			var parsedTemperature = parseFloat(message);
 			if(parsedTemperature != NaN)
 				writeCurrentTempToDB(topicParts[2], parsedTemperature);
+		}
+		if(topicParts[3] != 'uptime') {
+			db.Events.create({deviceId : topicParts[2], time : Date.now(), attribute : topicParts[3], value : message}).then(null, function(err) { winston.error(err); });
 		}
 
 		var deviceId = topicParts[2];
