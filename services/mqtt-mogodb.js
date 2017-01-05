@@ -4,7 +4,7 @@ var db = require('./dbModel.js');
 var mqttLib = require('mqtt');
 var winston = require('./logging.js');
 
-mongoose.connect('mongodb://localhost/thermo');
+mongoose.connect(config.mongoUrl, {user : config.mongoMqttUsername, pass : config.mongoMqttPassword});
 var dbConnection = mongoose.connection;
 dbConnection.on('error', function (err) { winston.error("Error connecting to mongodb %j", err); });
 dbConnection.once('open', function() {
