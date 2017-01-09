@@ -4,7 +4,7 @@ var db = require('./dbModel.js');
 var mqttLib = require('mqtt');
 var winston = require('./logging.js');
 
-mongoose.connect('mongodb://localhost/thermo');
+mongoose.connect(config.mongoUrl, {user : config.mongoMqttUsername, pass : config.mongoMqttPassword});
 var dbConnection = mongoose.connection;
 dbConnection.on('error', function (err) { winston.error("Error connecting to mongodb %j", err); });
 dbConnection.once('open', function() {
@@ -45,6 +45,9 @@ var setupMqtt = function() {
 		}
 		if(topicParts[3] != 'uptime') {
 			db.Events.create({deviceId : topicParts[2], time : Date.now(), attribute : topicParts[3], value : message}).then(null, function(err) { winston.error(err); });
+		}
+		if(topicParts[3] == 'uptime' && message == '50') {
+			db.Events.create({deviceId : topicParts[2], time : Date.now(), attribute : 'restart', value : 'true'}).then(null, function(err) { winston.error(err); });
 		}
 
 		var deviceId = topicParts[2];

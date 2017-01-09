@@ -1,5 +1,6 @@
 var listeningPort = 8085;
 
+const config = require('./config.js');
 const util = require('util');
 const winston = require('./logging.js');
 const express = require('express');
@@ -9,7 +10,7 @@ const mongoose = require('mongoose');
 winston.level = 'debug';
 winston.cli();
 
-mongoose.connect('mongodb://ec2.mrostudios.com/thermo');
+mongoose.connect(config.mongoUrl, {user : config.mongoRestUsername, pass : config.mongoRestPassword});
 var dbConnection = mongoose.connection;
 dbConnection.on('error', function(err) {
 	winston.error("Error connecting to mongodb %j", err);
