@@ -24,23 +24,24 @@ os_timer_t secondTimer;
 
 TemperatureControlMode temperatureMode = MANUAL;
 
-
-
 auto_state_t *currentState = NULL;
 MQTT_Client mqttClient;
 
 bool isHeating = false;
+
+int16_t tempDelta = 126 / 2;
+
 LOCAL ICACHE_FLASH_ATTR
 void set_heater(uint16_t targetTemp, uint16_t currentTemp) {
-    if (currentTemp < targetTemp) {
+    if (currentTemp < targetTemp - tempDelta) {
         drawingSetHeaterEnabled(&drawingState, true);
         mqttPublishHeater(&mqttClient, true);
-    } else {
+    } else if(currentTemp >= targetTemp + tempDelta) {
         drawingSetHeaterEnabled(&drawingState, false);
         mqttPublishHeater(&mqttClient, false);
     }
 
-    GPIO_OUTPUT_SET(GPIO_ID_PIN(RELAY_GPIO), drawingState.heaterEnabled ? 0 : 1);
+    GPIO_OUTPUT_SET(GPIO_ID_PIN(RELAY_GPIO), drawingState.heaterEnabled ? 1 : 0);
 }
 
 LOCAL ICACHE_FLASH_ATTR
@@ -175,7 +176,7 @@ void app_init(void) {
     read_status();
     read_states();
 
-    mqttStart();
+    mqttStart(&mqttClient);
 
     wifi_set_opmode_current(0x01);  //set station mode
     wifi_set_event_handler_cb(wifi_status_handler);

@@ -17,8 +17,8 @@
 #define MQTT_KEEPALIVE    120  /*second*/
 
 #define MQTT_CLIENT_ID    MQTT_DEVICEID
-#define MQTT_USER     ""
-#define MQTT_PASS     ""
+#define MQTT_USER     "termo-2"
+#define MQTT_PASS     "654321"
 #define MQTT_CLEAN_SESSION 1
 #define MQTT_KEEPALIVE 120
 

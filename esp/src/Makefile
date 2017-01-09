@@ -36,7 +36,7 @@ EXTRA_INCDIR    = include $(ROOT)/include/ include/driver include/cpp mqtt/inclu
 LIBS		= c gcc hal phy net80211 lwip wpa upgrade main pp json ssl pwm crypto
 
 # compiler flags using during compilation of source files
-DEFINITIONS = -DICACHE_FLASH -DBUILD_TIME=\"$(DATETIME)\" -DDEBUG_ON
+DEFINITIONS = -DICACHE_FLASH -DBUILD_TIME=\"$(DATETIME)\" -DDEBUG_ON # -DMQTT_DEBUG_ON
 CFLAGS		= -Os -g -O2 -Wpointer-arith -Wundef -Wl,-EL -fno-inline-functions -ffunction-sections -fdata-sections -nostdlib -mlongcalls -mtext-section-literals -fno-builtin-printf -D__ets__ $(DEFINITIONS)
 CXXFLAGS	= $(CFLAGS) -fno-rtti -std=c++11 -fno-exceptions
 

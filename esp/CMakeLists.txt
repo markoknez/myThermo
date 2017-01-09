@@ -6,7 +6,7 @@ set(CONFIG_VERSION 1.0.0)
 set(PROJECT_BINARY_DIR ${PROJECT_SOURCE_DIR}/builds)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DCLION")
-set(CMAKE_C_FLAGS_DEBUG "-DCLION")
+set(CMAKE_C_FLAGS_DEBUG "-DCLION -DBUILD_TIME=\"123\"")
 
 include_directories(include src/include src/include/driver src/include/sll src/include/weather_icons src/include/cpp src/mqtt/include)
 file(GLOB_RECURSE SOURCE_C_FILES "src/*.c")

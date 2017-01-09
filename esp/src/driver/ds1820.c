@@ -46,6 +46,7 @@ ICACHE_FLASH_ATTR static uint8_t crc8(const uint8_t *addr, uint8_t len);
 os_timer_t timer_tempReady;
 
 int16_t temperature_currentTemperature;
+int16_t tempCalibration = 0;
 
 ICACHE_FLASH_ATTR
 static void ds_read_temp(uint8_t *addr) {
@@ -82,6 +83,7 @@ static void ds_read_temp(uint8_t *addr) {
 
 
 	temperature_currentTemperature = (uint16_t)tVal * 100 + tFract;
+	temperature_currentTemperature += tempCalibration;
 	if(tSign == '-')
 		temperature_currentTemperature *= -1;
 //	os_printf("%d.%d\n", tVal, tFract);
