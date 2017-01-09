@@ -29,9 +29,10 @@ apiRouter.use(function(req, res, next) {
 });
 
 apiRouter.get('/tempHistory/:id', function(req, res, next) {
-	var query = db.TemperatureHistory
+	var query = db.Events
 		.find({
-			deviceId: req.params.id
+			deviceId: req.params.id,
+			attribute: 'currentTemp'
 		})
 		.sort({
 			time: 'asc'
@@ -44,10 +45,13 @@ apiRouter.get('/tempHistory/:id', function(req, res, next) {
 		}
 	});
 
+	if(!req.query.limit && !req.query.from)
+		query = query.limit(100);
+
 	query.exec(function(err, temps) {
 		res.write('time,temp\n');
 		temps.forEach(function(temp) {
-			res.write(util.format('%d,%d\n', temp.time, temp.temp));
+			res.write(util.format('%d,%d\n', temp.time, temp.value));
 		});
 		res.status(200);
 		res.end();
@@ -66,6 +70,12 @@ apiRouter.get('/restarts', function(req, res, next) {
 		})
 		.exec(function(err, data) {
 			if (err) return next(err);
+			data.map(it => {
+				return {
+					deviceId : it.deviceId,
+					time : it.time - 50000
+				};
+			});
 			res.json(data);
 		});
 });

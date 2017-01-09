@@ -1,5 +1,5 @@
 function RestClient() {
-	this.baseURL = 'http://thermo.mrostudios.com/rest';
+	this.baseURL = 'http://localhost:8085';
 };
 
 RestClient.prototype.tempData = function(deviceId) {
