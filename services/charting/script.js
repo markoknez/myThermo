@@ -1,12 +1,14 @@
 $(function() {	
 	var restClient = new RestClient();
-	restClient.devices()
+	restClient
+		.devices()
 		.then(devices => {
 			var promises = [];
 			devices.forEach(device => {
 				var deviceId = device.deviceId;
 				promises.push(restClient.tempData(deviceId));
 			});
+			promises.push(restClient.restarts());
 			return Promise.all(promises);
 		})
 		.then(d => {		
@@ -14,7 +16,9 @@ $(function() {
 		var start = +new Date();
 
 		var series = [];
-		d.forEach(item => {
+		//foreach all devices
+		var deviceData = d.slice(0, d.length - 1);
+		deviceData.forEach(item => {
 			series.push({
 				name: item.name,
 				data: item.data,
@@ -23,6 +27,19 @@ $(function() {
 					valueDecimals: 1,
 					valueSuffix: '°C'
 				}});
+		});
+		//restarts
+		var restarts = [];
+		d[d.length - 1].forEach(function (item) {
+			restarts.push([item.time, 1]);
+		});
+		series.push({
+			name: 'restarts',
+			data: restarts.data,
+			pointStart: restarts.data[0][0],
+			marker: {
+				symbol: 'circle'
+			}
 		});
 
 		// Create the chart

@@ -22,9 +22,9 @@ const app = express();
 const apiRouter = express.Router();
 
 apiRouter.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	next();
 });
 
 apiRouter.get('/tempHistory/:id', function(req, res, next) {
@@ -33,8 +33,8 @@ apiRouter.get('/tempHistory/:id', function(req, res, next) {
 			deviceId: req.params.id
 		})
 		.sort({
-			time : 'asc'
-		});		
+			time: 'asc'
+		});
 
 	if (req.query.limit) query = query.limit(parseInt(req.query.limit));
 	if (req.query.from) query = query.where({
@@ -45,7 +45,7 @@ apiRouter.get('/tempHistory/:id', function(req, res, next) {
 
 	query.exec(function(err, temps) {
 		res.write('time,temp\n');
-		temps.forEach(function(temp) {			
+		temps.forEach(function(temp) {
 			res.write(util.format('%d,%d\n', temp.time, temp.temp));
 		});
 		res.status(200);
@@ -53,10 +53,27 @@ apiRouter.get('/tempHistory/:id', function(req, res, next) {
 	});
 });
 
+apiRouter.get('/restarts', function(req, res, next) {
+	db.Events
+		.find({
+			attribute: 'restart'
+		})
+		.select({
+			_id: 0,
+			deviceId: 1,
+			time: 1
+		})
+		.exec(function(err, data) {
+			if (err) return next(err);
+			res.json(data);
+		});
+});
+
 apiRouter.get('/devices', function(req, res, next) {
 	db.Device
 		.find({})
 		.select({
+			_id: 0,
 			deviceId: 1
 		})
 		.exec(function(err, devices) {

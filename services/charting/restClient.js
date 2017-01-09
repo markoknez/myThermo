@@ -16,6 +16,10 @@ RestClient.prototype.devices = function() {
 	return $.getJSON(this.baseURL + '/api/devices');
 };
 
+RestClient.prototype.restarts = function() {
+	return $.getJSON(this.baseURL + '/api/restarts');
+};
+
 RestClient.prototype.parseCSV = function(csv) {
 	var data = [];
 	var lines = csv.split('\n');

@@ -2,7 +2,7 @@ var mqttLib = require('mqtt');
 var wt = require('node-notifier').WindowsToaster;
 wt = wt({});
 
-var mqtt = mqttLib.connect('mqtt://test.mosquitto.org');
+var mqtt = mqttLib.connect('mqtt://ec2.mrostudios.com');
 mqtt.on('connect', function() {
 	mqtt.subscribe('mrostudios/devices/+/uptime/status');
 });
