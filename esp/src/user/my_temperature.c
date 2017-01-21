@@ -6,6 +6,7 @@
 #include "osapi.h"
 #include "my_temperature.h"
 #include "driver/ds1820.h"
+#include "mqttMain.h"
 
 os_timer_t temperature_readTimer;
 uint8_t temperature_deviceId[8];

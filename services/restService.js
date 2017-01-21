@@ -58,6 +58,42 @@ apiRouter.get('/tempHistory/:id', function(req, res, next) {
 	});
 });
 
+apiRouter.get('/events/:deviceId/:attribute', function(req, res, next) {
+	var deviceId = req.params.deviceId;
+	var attribute = req.params.attribute;
+	var from = parseInt(req.query.from);
+	var to = parseInt(req.query.to);
+
+	if(!deviceId) {		
+		return next(new Error('deviceId required'));
+	}
+	if(!attribute){		
+		return next(new Error('attribute required'));
+	}
+	if(from == NaN){		
+		return next(new Error('from required'));
+	}		
+	if(isNaN(to)){		
+		to = from + 24 * 60 * 60 * 1000;
+	}			
+
+	db.Events
+		.find({
+			attribute : attribute,
+			deviceId : deviceId,
+			time : {$gte : from, $lt : to}
+		})
+		.select({
+			_id : 0,			
+			time: 1,
+			value: 1
+		})
+		.exec(function (err, data) {
+			if(err) return next(err);
+			res.json(data);
+		});
+});
+
 apiRouter.get('/restarts', function(req, res, next) {
 	db.Events
 		.find({
@@ -114,7 +150,7 @@ app.use('/api', apiRouter);
 
 app.use(function(err, req, res, next) {
 	winston.error(err);
-	res.status(500).send('ups');
+	res.status(500).send(err.message);
 });
 
 app.listen(listeningPort, function() {

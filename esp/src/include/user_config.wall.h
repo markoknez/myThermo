@@ -48,10 +48,6 @@
 #define PROTOCOL_NAMEv311 /*MQTT version 3.1 compatible with Mosquitto v0.15*/
 //PROTOCOL_NAMEv311     /*MQTT version 3.11 compatible with https://eclipse.org/paho/clients/testing/*/
 
-#if defined(DEBUG_ON)
-#define INFO( format, ... ) os_printf( format, ## __VA_ARGS__ )
-#else
-#define INFO( format, ... )
-#endif
+
 
 #endif // __MQTT_CONFIG_H__

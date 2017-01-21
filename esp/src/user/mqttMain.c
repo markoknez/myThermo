@@ -209,15 +209,15 @@ mqttDataCb(uint32_t *args, const char *topic, uint32_t topic_len, const char *da
 }
 
 static void ICACHE_FLASH_ATTR print_info() {
-    INFO("\r\n\r\n[INFO] BOOTUP...\r\n");
-    INFO("[INFO] SDK: %s\r\n", system_get_sdk_version());
-    INFO("[INFO] Chip ID: %08X\r\n", system_get_chip_id());
-    INFO("[INFO] Memory info:\r\n");
+    INFO("\r\n\r\nBOOTUP...\r\n");
+    INFO("SDK: %s\r\n", system_get_sdk_version());
+    INFO("Chip ID: %08X\r\n", system_get_chip_id());
+    INFO("Memory info:\r\n");
     system_print_meminfo();
 
-    INFO("[INFO] -------------------------------------------\n");
-    INFO("[INFO] Build time: %s\n", BUILD_TIME);
-    INFO("[INFO] -------------------------------------------\n");
+    INFO("-------------------------------------------\n");
+    INFO("Build time: %s\n", BUILD_TIME);
+    INFO("-------------------------------------------\n");
 }
 
 
@@ -267,4 +267,8 @@ void mqttPublishHeater(MQTT_Client *mqttClient, bool isEnabled) {
 
 void mqttPublishFWVersion(MQTT_Client *mqttClient) {
     MQTT_Publish(mqttClient, "mrostudios/devices/"MQTT_DEVICEID"/fwVersion/status", BUILD_TIME, os_strlen(BUILD_TIME), 1, 1);
+}
+
+void mqttPublishError(MQTT_Client *mqttClient, char *errorMsg) {
+    MQTT_Publish(mqttClient, "mrostudios/devices/"MQTT_DEVICEID"/error/status", errorMsg, os_strlen(errorMsg), 1, 0);
 }

@@ -5,6 +5,8 @@
 #include "osapi.h"
 #include "user_interface.h"
 #include "user_config_base.h"
+#include "mqttMain.h"
+#include "user_global.h"
 
 #include "gpio.h"
 
@@ -59,6 +61,12 @@ static void ds_read_temp(uint8_t *addr) {
 	uint8_t i;
 	for (i = 0; i < 9; i++) {
 		data[i] = read();
+	}
+
+	if(data[8] != crc8(data, 8)) {
+		os_printf("ERROR - DS18B20 - CRC mismatch\n");
+        mqttPublishError(&mqttClient, "CRC mismatch");
+//		return;
 	}
 
 // float arithmetic isn't really necessary, tVal and tFract are in 1/10 �C
