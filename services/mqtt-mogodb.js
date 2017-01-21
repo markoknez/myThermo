@@ -14,15 +14,6 @@ dbConnection.once('open', function() {
 
 
 
-var writeCurrentTempToDB = function(deviceId, currentTemp) {	
-	winston.debug("Writing temp to history: %s, %s", deviceId, currentTemp);
-	db.TemperatureHistory.create({
-		deviceId: deviceId,
-		temp : currentTemp,
-		time : Date.now()
-	}).then(null, function(err) { winston.error(err); });
-};
-
 var setupMqtt = function() {
 	var mqtt = mqttLib.connect('mqtt://ec2.mrostudios.com', {username : config.mqttMongodbUsername, password : config.mqttMongodbPassword});
 	mqtt.on('connect', function() {
@@ -38,11 +29,7 @@ var setupMqtt = function() {
 			winston.error("Topic wrong - " + topic + " , message - " + message);
 			return;
 		}
-		if(topicParts[3] == 'currentTemp') { 
-			var parsedTemperature = parseFloat(message);
-			if(parsedTemperature != NaN)
-				writeCurrentTempToDB(topicParts[2], parsedTemperature);
-		}
+				
 		if(topicParts[3] != 'uptime') {
 			db.Events.create({deviceId : topicParts[2], time : Date.now(), attribute : topicParts[3], value : message}).then(null, function(err) { winston.error(err); });
 		}
