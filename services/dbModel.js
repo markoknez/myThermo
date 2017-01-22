@@ -2,12 +2,6 @@ const mongoose = require('mongoose');
 
 var Db = function () {};
 
-Db.prototype.TemperatureHistory = mongoose.model('tempHistory', {
-	deviceId : String,
-	temp : Number,
-	time : Number
-});
-
 Db.prototype.Events = mongoose.model('events', {
 	deviceId : String,
 	time : Number,
