@@ -10,7 +10,10 @@ const mongoose = require('mongoose');
 winston.level = 'debug';
 winston.cli();
 
-mongoose.connect(config.mongoUrl, {user : config.mongoRestUsername, pass : config.mongoRestPassword});
+mongoose.connect(config.mongoUrl, {
+	user: config.mongoRestUsername,
+	pass: config.mongoRestPassword
+});
 var dbConnection = mongoose.connection;
 dbConnection.on('error', function(err) {
 	winston.error("Error connecting to mongodb %j", err);
@@ -45,7 +48,7 @@ apiRouter.get('/tempHistory/:id', function(req, res, next) {
 		}
 	});
 
-	if(!req.query.limit && !req.query.from)
+	if (!req.query.limit && !req.query.from)
 		query = query.limit(100);
 
 	query.exec(function(err, temps) {
@@ -63,35 +66,55 @@ apiRouter.get('/events/:deviceId/:attribute', function(req, res, next) {
 	var attribute = req.params.attribute;
 	var from = parseInt(req.query.from);
 	var to = parseInt(req.query.to);
+	var isCSV = req.query.csv == 'true';
 
-	if(!deviceId) {		
+	if (!deviceId) {
 		return next(new Error('deviceId required'));
 	}
-	if(!attribute){		
+	if (!attribute) {
 		return next(new Error('attribute required'));
 	}
-	if(from == NaN){		
+	if (from == NaN) {
 		return next(new Error('from required'));
-	}		
-	if(isNaN(to)){		
+	}
+	if (isNaN(to)) {
 		to = from + 24 * 60 * 60 * 1000;
-	}			
+	}
 
-	db.Events
+	var query = db.Events
 		.find({
-			attribute : attribute,
-			deviceId : deviceId,
-			time : {$gte : from, $lt : to}
+			attribute: attribute,
+			deviceId: deviceId,
+			time: {
+				$gte: from,
+				$lt: to
+			}
 		})
 		.select({
-			_id : 0,			
+			_id: 0,
 			time: 1,
 			value: 1
-		})
-		.exec(function (err, data) {
-			if(err) return next(err);
-			res.json(data);
 		});
+
+	if (isCSV) {
+		var stream = query.stream();
+		res.write('time,temp\n');
+		stream.on('data', data => {
+			res.write(util.format('%d,%d\n', data.time, data.value));
+		});
+		stream.on('error', (err) => {
+			next(err);
+		});
+		stream.on('close', () => {
+			res.end();
+		});
+		return;
+	}
+
+	return query.exec(function(err, data) {
+		if (err) return next(err);
+		res.json(data);
+	});
 });
 
 apiRouter.get('/restarts', function(req, res, next) {
@@ -108,8 +131,8 @@ apiRouter.get('/restarts', function(req, res, next) {
 			if (err) return next(err);
 			data.map(it => {
 				return {
-					deviceId : it.deviceId,
-					time : it.time - 50000
+					deviceId: it.deviceId,
+					time: it.time - 50000
 				};
 			});
 			res.json(data);
