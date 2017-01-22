@@ -1,8 +1,15 @@
 var restClient = new RestClient();
 
+function addLoadingMessage(msg) {
+	var div = document.createElement('div');
+	div.innerText = msg;
+	$('#loading').append(div);
+}
+
 function currentTemp(deviceId) {
 	return restClient.events(deviceId, 'currentTemp', true)
 		.then(data => {
+			addLoadingMessage('loaded currentTemp data for ' + deviceId);
 			return getTemperatureSeries(deviceId, data);
 		});
 }
@@ -10,6 +17,7 @@ function currentTemp(deviceId) {
 function manualTemp(deviceId) {
 	return restClient.events(deviceId, 'manualTemp')
 		.then(data => {
+			addLoadingMessage('loaded manualTemp data for ' + deviceId);
 			return getAreaSeries(deviceId + ' - set temp', convertWeirdTemperatures(data));
 		});
 }
@@ -17,6 +25,7 @@ function manualTemp(deviceId) {
 function restarts(deviceId) {
 	return restClient.events(deviceId, 'restart')
 		.then(data => {
+			addLoadingMessage('loaded restart events for ' + deviceId);
 			return getFlagSeries(deviceId, 'R', deviceId + ' - restarts', data);
 		});
 }
@@ -24,6 +33,7 @@ function restarts(deviceId) {
 function heater(deviceId) {
 	return restClient.events(deviceId, 'heater')
 		.then(data => {
+			addLoadingMessage('loaded heater events for ' + deviceId);
 			return getFlagSeries(deviceId, 'H', deviceId + ' - heater', data.filter(it => it.value == 'true'));
 		});
 }
