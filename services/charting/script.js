@@ -47,7 +47,7 @@ $(function() {
 			return Promise.all(promises);
 		})
 		.then(series => {
-
+			$('#loading').hide();
 			// Create the chart
 			Highcharts.stockChart('container', {
 				chart: {
