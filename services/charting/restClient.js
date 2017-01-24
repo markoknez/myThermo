@@ -5,6 +5,14 @@ function RestClient() {
 	this.to = Date.now();
 };
 
+RestClient.prototype.setFrom = function(value) {
+	if(isNaN(value))
+		return;
+
+	this.from = value;
+	this.to = this.from + 24 * 3600000;
+};
+
 RestClient.prototype.devices = function() {
 	return $.getJSON(this.baseURL + '/api/devices');
 };

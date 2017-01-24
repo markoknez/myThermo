@@ -64,7 +64,8 @@ apiRouter.get('/events/:deviceId/:attribute', function(req, res, next) {
 			_id: 0,
 			time: 1,
 			value: 1
-		});
+		})
+		.sort({time : 1});
 
 	if (isCSV) {
 		var stream = query.stream();

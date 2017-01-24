@@ -6,7 +6,8 @@ Db.prototype.Events = mongoose.model('events', {
 	deviceId : String,
 	time : Number,
 	attribute : String,
-	value : String
+	value : String,
+	parsed : String
 });
 
 Db.prototype.Device = mongoose.model('device', {
